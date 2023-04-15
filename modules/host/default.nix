@@ -4,6 +4,7 @@
   self,
   microvm,
   netvm,
+  firefoxvm,
 }: {lib, ...}: {
   imports = [
     (import ./minimal.nix)
@@ -12,7 +13,7 @@
 
     ../overlays/custom-packages.nix
 
-    (import ./microvm.nix {inherit self netvm;})
+    (import ./microvm.nix {inherit self netvm firefoxvm;})
     ./networking.nix
   ];
 

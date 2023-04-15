@@ -3,10 +3,16 @@
 {
   self,
   netvm,
+  firefoxvm,
 }: {config, ...}: {
   microvm.host.enable = true;
 
   microvm.vms."${netvm}" = {
+    flake = self;
+    autostart = true;
+  };
+
+  microvm.vms."${firefoxvm}" = {
     flake = self;
     autostart = true;
   };

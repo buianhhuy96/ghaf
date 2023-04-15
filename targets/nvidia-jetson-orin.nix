@@ -16,7 +16,7 @@
       modules =
         [
           (import ../modules/host {
-            inherit self microvm netvm;
+            inherit self microvm netvm firefoxvm;
           })
 
           jetpack-nixos.nixosModules.default
@@ -33,8 +33,9 @@
         ++ extraModules;
     };
     netvm = "netvm-${name}-${variant}";
+    firefoxvm = "appvm-firefox-${name}-${variant}";
   in {
-    inherit hostConfiguration netvm;
+    inherit hostConfiguration netvm firefoxvm;
     name = "${name}-${variant}";
     netvmConfiguration =
       (import ../microvmConfigurations/netvm {
@@ -61,6 +62,9 @@
           }
         ];
       };
+    firefoxvmConfiguration = import ../microvmConfigurations/appvm-firefox {
+      inherit nixpkgs microvm system;
+    };
     package = hostConfiguration.config.system.build.${hostConfiguration.config.formatAttr};
   };
   nvidia-jetson-orin-debug = nvidia-jetson-orin "debug" [];
@@ -96,7 +100,8 @@
 in {
   nixosConfigurations =
     builtins.listToAttrs (map (t: nixpkgs.lib.nameValuePair t.name t.hostConfiguration) (targets ++ crossTargets))
-    // builtins.listToAttrs (map (t: nixpkgs.lib.nameValuePair t.netvm t.netvmConfiguration) targets);
+    // builtins.listToAttrs (map (t: nixpkgs.lib.nameValuePair t.netvm t.netvmConfiguration) targets)
+    // builtins.listToAttrs (map (t: nixpkgs.lib.nameValuePair t.firefoxvm t.firefoxvmConfiguration) targets);
 
   packages = {
     aarch64-linux =
