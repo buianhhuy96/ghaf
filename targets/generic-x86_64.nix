@@ -54,7 +54,7 @@
             microvm.devices = [
               {
                 bus = "pci";
-                path = "0000:00:14.3";
+                path = "0000:71:00.0";
               }
             ];
 
