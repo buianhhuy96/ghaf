@@ -20,7 +20,8 @@ nixpkgs.lib.nixosSystem {
       # TODO: Maybe inherit state version
       system.stateVersion = "22.11";
 
-      microvm.hypervisor = "crosvm";
+#      microvm.hypervisor = "crosvm";
+      microvm.hypervisor = "qemu";
 
       networking = {
         enableIPv6 = false;
