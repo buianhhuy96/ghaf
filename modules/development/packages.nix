@@ -11,6 +11,15 @@
     # Useful in NetVM
     ethtool
 
+    # Wireless tools
+    wirelesstools
+
+    # Human-friendly editors
+    vim
+
+    # Docker
+    docker-compose
+
     # Basic monitors
     htop
     iftop

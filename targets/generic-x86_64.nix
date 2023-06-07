@@ -36,7 +36,23 @@
               # Passthrough Intel WiFi card
               "vfio-pci.ids=8086:a0f0"
             ];
+
+            virtualisation.docker.enable = true;
+
+            # For WLAN firmwares
+            hardware.enableRedistributableFirmware = true;
+            networking.networkmanager.enable = true;
+            # networking.wireless = {
+            #   enable = true;
+            #   userControlled.enable = true;
+            #   networks."TII" = {
+            #     auth = ''
+            #       password="Tii@Unikie!"
+            #     '';
+            #   };
+            # };
           }
+
         ]
         ++ extraModules;
     };
@@ -49,25 +65,16 @@
         inherit nixpkgs microvm system;
       })
       .extendModules {
-        modules = [
-          {
-            microvm.devices = [
-              {
-                bus = "pci";
-                path = "0000:71:00.0";
-              }
-            ];
-
-            # For WLAN firmwares
-            hardware.enableRedistributableFirmware = true;
-
-            networking.wireless = {
-              enable = true;
-
-              # networks."SSID_OF_NETWORK".psk = "WPA_PASSWORD";
-            };
-          }
-        ];
+#        modules = [
+#          {
+#            microvm.devices = [
+#              {
+#                bus = "pci";
+#                path = "0000:71:00.0";
+#              }
+#            ];
+#          }
+#        ];
       };
     package = hostConfiguration.config.system.build.${hostConfiguration.config.formatAttr};
   };
