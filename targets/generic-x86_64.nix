@@ -65,16 +65,16 @@
         inherit nixpkgs microvm system;
       })
       .extendModules {
-#        modules = [
-#          {
-#            microvm.devices = [
-#              {
-#                bus = "pci";
-#                path = "0000:71:00.0";
-#              }
-#            ];
-#          }
-#        ];
+        modules = [
+          {
+            microvm.devices = [
+              {
+                bus = "pci";
+                path = "0000:71:21.7";
+              }
+            ];
+          }
+        ];
       };
     package = hostConfiguration.config.system.build.${hostConfiguration.config.formatAttr};
   };
