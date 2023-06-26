@@ -15,4 +15,6 @@
   ./users/accounts.nix
   ./version
   ./windows-launcher
+  ./docker/service.nix        
+          
 ]
