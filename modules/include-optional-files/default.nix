@@ -24,6 +24,7 @@ in
       default = null;
     };
 
+    # The file will be copied to /home/ghaf/include as default
     des-path  = mkOption {
       type = types.path;
       default = "${config.users.users.ghaf.home}/include";
@@ -82,7 +83,9 @@ in
     enable = true;
 
     src-path = example-git;
-    #src-path = example-local;
+    # The file will be copied to /home/ghaf/include as default
+    # Modifying des-path to select/create the destination folder.
+    #des-path = "${config.users.users.ghaf.home}/include";
   };
 
 
