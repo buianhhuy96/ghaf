@@ -14,19 +14,30 @@ import (
 
 
 )
+type installationStep int64
+const (
+	Welcome installationStep = iota
+	Wifi  
+	Partitions  
+	Exit
+)
+const nextStep 	   =  ">>--Skip to next step------->>"
+const previousStep =  "<<--Back to previous step---<<"
+
+
+var second = time.Second
+var ghaf = "nixos.img"
+var connectionStatus = false
+var currentInstallationStep = Welcome
 
 type CommandOutput struct {
     message  []string
     errorcode int
 }
 
-var second = time.Second
-func clear() {
-	print("\033[H\033[2J")
-}
 
 func showcase(title string, seconds int, content func()) {
-	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightGreen)).WithFullWidth().Println(title)
+	pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgGreen)).WithFullWidth().Println(title)
 	pterm.Println()
 	time.Sleep(second / 2)
 	content()
@@ -40,105 +51,173 @@ func execCommand(cmd string, arg ...string) CommandOutput {
     s := exec.Command(cmd, arg...)
 	
     stdout, err := s.Output()
-    if err != nil {
-        return CommandOutput{strings.Split(err.Error(),string(10)),-1}
+	errorcode := 0
+	message := strings.Split(string(stdout),string(10))
+    if (err != nil) {
+		errorcode = -1
+		message = strings.Split(err.Error(),string(10))
     }
-
-    return CommandOutput{strings.Split(string(stdout),string(10)),0}
+	if (strings.Split(strings.Split(string(stdout),string(10))[0],string(32))[0] == "Error:") {
+		errorcode = -1
+	}
+    return CommandOutput{message,errorcode}
 }
 
-var ghaf = "nixos.img"
-func main() {
-	ghaf_image, _ := os.Stat(ghaf)
-	image_size := ghaf_image.Size()
-	// Print a large text with differently colored letters.
-	showcase("Welcome", 2, func() {
-		area, _ := pterm.DefaultArea.WithCenter().WithCenter().Start()
+func checkSkipStep (input string) bool {
+	if (input == nextStep) {
+		currentInstallationStep++
+		return true
+	} else if input == previousStep {
+		currentInstallationStep--
+		return true
+	}
+	return false
+}
 
-		for i := 0; i < 4; i++ {
+func welcomeScreen () {
+	area, _ := pterm.DefaultArea.WithCenter().WithCenter().Start()
+	for i := 0; i < 4; i++ {
+		str, _ := pterm.DefaultBigText.WithLetters(
+			putils.LettersFromStringWithStyle("G", pterm.FgLightGreen.ToStyle()),
+			putils.LettersFromString("haf")).
+			Srender()
+		area.Update(str)
+		time.Sleep(time.Second)
+	}
+	currentInstallationStep = Wifi
+	return
+}
 
-			str, _ := pterm.DefaultBigText.WithLetters(
-				putils.LettersFromStringWithStyle("G", pterm.FgLightGreen.ToStyle()),
-				putils.LettersFromString("haf")).
-				Srender()
-			area.Update(str)
-			time.Sleep(time.Second)
+func wifiScreen () {
+	wifiConnect := execCommand("nmcli", "-t", "--fields", "SSID,SIGNAL,SECURITY", "dev", "wifi")
+		skipWifi := false
+		if len(wifiConnect.message) == 0 {
+			skipWifi = true
+			currentInstallationStep = Partitions
+			return
 		}
-	})
-	showcase("Connect to network", 5, func()  {
+		for (!connectionStatus && !skipWifi) { 
+			wifiList := wifiConnect.message[0:len(wifiConnect.message)-1]
+			longestWifiSSID := 0
+			for _,wifi := range wifiList {
+				wSSID := strings.Split(string(wifi),":")[0]
+				if len(wSSID) > longestWifiSSID {
+					longestWifiSSID = len(wSSID)
+				}
+			}
+			var wifiListBeautified []string
 
-		wifi := execCommand("nmcli", "--fields", "SSID,BARS,SECURITY", "dev", "wifi")
-		if len(wifi.message) > 0 {
-			wifi_list := wifi.message;
-			//separator,_:=  utf8.DecodeRune([]byte{226, 150, 130})
+			for _,wifi := range wifiList {
+				wSSID := strings.Split(string(wifi),":")[0]
+				wSignal := strings.Split(string(wifi),":")[1]
+				wSSIDBeautified := wSSID + strings.Repeat(" ", longestWifiSSID + 2 -len(wSSID))
+				wSignalBeautified := wSignal + strings.Repeat(" ", 8 -len(wSignal))
+				wSecurity := strings.Split(string(wifi),":")[2]
+				wifiListBeautified = append(wifiListBeautified, wSSIDBeautified + "||" + wSignalBeautified + "||" + wSecurity)
+			}
 
-			selected_wifi, _ := pterm.DefaultInteractiveSelect. 
+
+
+			wifiListBeautified = append([]string{ nextStep }, wifiListBeautified...)
+			wifiListBeautified = append([]string{ previousStep }, wifiListBeautified...)
+			wifiListHeading := "SSID" + strings.Repeat(" ", longestWifiSSID + 2 -len("SSID")) + "||SIGNAL  ||SECURITY" 
+			selectedWifi, _ := pterm.DefaultInteractiveSelect. 
 								WithMaxHeight(20).
-								WithOptions(wifi_list[1:]).
-								Show("Wifi list \n  " + wifi_list[0])
+								WithOptions(wifiListBeautified).
+								Show("Wifi list \n  " + wifiListHeading)
 
-			SSID := strings.TrimSpace(strings.Split(string(selected_wifi),string(32))[0])
+			if checkSkipStep(selectedWifi) {
+				skipWifi = true
+				return
+			}
+
+			SSID := strings.TrimSpace(strings.Split(string(selectedWifi),string("||"))[0])
 			pterm.Info.Printfln("Connect to %s", SSID)
-			// TO-DO: No password required
+
 			password, _ := pterm.DefaultInteractiveTextInput.
 							WithMultiLine(false).
 							WithMask("*").
-							Show("Password")
+							Show("Password (If no password, leave empty)")
 			
 			wifiConnectingSpinner, _ := pterm.DefaultSpinner.WithShowTimer(false).WithRemoveWhenDone(true).Start("Connecting to " + SSID)
 			connection := execCommand("nmcli", "dev", "wifi", "connect", SSID, "password", password)
 			wifiConnectingSpinner.Stop()//pterm.Println(connection.errorcode) // Blank line
 			if (connection.errorcode == 0){
+				connectionStatus = true
 				pterm.Info.Printfln("Connected")
 			} else {
-
+				connectionStatus = false
 				pterm.Error.Printfln("Failed to connect to " + SSID)
 			}
-
 		}
+		
+		
+}
 
-	})
-	showcase("Choose Partitions", 2, func()  {
-		drives := execCommand("lsblk", "-d", "-e7")
-		if len(drives.message) > 0 {
-			drives_list := drives.message;
-			selected_drive, _ := pterm.DefaultInteractiveSelect.
-									WithOptions(drives_list[1:len(drives_list)-1]).
-									Show("Please select device to install Ghaf \n  " + drives_list[0])
-			pterm.Info.Printfln("Selected: %s", pterm.Green(strings.TrimSpace(strings.Split(string(selected_drive),string(32))[0])))
-			write_image := "dd if=" + ghaf + " of=/dev/" +strings.TrimSpace(strings.Split(string(selected_drive),string(32))[0])+ " conv=sync bs=4K status=progress";
-			s := exec.Command("sudo", strings.Split(write_image," ")...)
-			stdout, err := s.StderrPipe()
-			s.Start()
+func partitionScreen () {
+	ghafImage, _ := os.Stat(ghaf)
+	imageSize := ghafImage.Size()
+	drives := execCommand("lsblk", "-d", "-e7")
+	var drivesListHeading, selectedDrive string
+
+	if len(drives.message) > 0 {
+		drivesListHeading = "  " + drives.message[0];
+		drivesList := drives.message[1:len(drives.message)-1];
+		drivesList = append([]string{ nextStep }, drivesList...)
+		drivesList = append([]string{ previousStep }, drivesList...)
+		selectedDrive, _ = pterm.DefaultInteractiveSelect.
+								WithOptions(drivesList).
+								Show("Please select device to install Ghaf \n  " + drivesListHeading)
+		if checkSkipStep(selectedDrive) {
+			return
+		}
+	} 
+
+	pterm.Info.Printfln("Selected: %s", pterm.Green(strings.TrimSpace(strings.Split(string(selectedDrive),string(32))[0])))
+	writeImage := "dd if=" + ghaf + " of=/dev/" +strings.TrimSpace(strings.Split(string(selectedDrive),string(32))[0])+ " conv=sync bs=4K status=progress";
+	s := exec.Command("sudo", strings.Split(writeImage," ")...)
+	stdout, err := s.StderrPipe()
+	s.Start()
+	if err != nil {
+		pterm.Info.Printfln("Error during installation")
+	}
+	lastProgessbarValue := int(0)
+	p, _ := pterm.DefaultProgressbar.WithTotal(int(imageSize)).WithTitle("Copied").Start()
+	counter := -1
+	scanner := bufio.NewScanner(stdout)
+	scanner.Split(bufio.ScanWords)
+	for scanner.Scan() {
+		
+		counter = int(math.Mod(float64(counter+1),11))
+		if counter == 0 {
+			current, err := strconv.Atoi(scanner.Text())
 			if err != nil {
-				pterm.Info.Printfln("Error during installation")
+				continue
 			}
-			last_progessbar_value := int(0)
-			p, _ := pterm.DefaultProgressbar.WithTotal(int(image_size)).WithTitle("Copied").Start()
-			counter := -1
-			scanner := bufio.NewScanner(stdout)
-			scanner.Split(bufio.ScanWords)
-			for scanner.Scan() {
-				
-				counter = int(math.Mod(float64(counter+1),11))
-				if counter == 0 {
-					current, err := strconv.Atoi(scanner.Text())
-					if err != nil {
-						continue
-					}
-					p.Add((current-last_progessbar_value))
-					last_progessbar_value = current
-				}
-
-			}
-			
-			s.Wait()
-			p.Add((int(image_size)-last_progessbar_value))
-			pterm.Info.Printfln("Installation Completed")
-
-
-
-
+			p.Add((current-lastProgessbarValue))
+			lastProgessbarValue = current
 		}
-	})
+	}
+	
+	s.Wait()
+	p.Add((int(imageSize)-lastProgessbarValue))
+	pterm.Info.Printfln("Installation Completed")
+
+	currentInstallationStep = Exit
+	return
+		
+}
+
+func main() {
+	for currentInstallationStep != Exit{
+		switch currentInstallationStep{
+		case Welcome:
+			showcase("Welcome", 2, welcomeScreen)
+		case Wifi:
+			showcase("Connect to network", 1, wifiScreen)
+		case Partitions:
+			showcase("Choose Partitions", 1, partitionScreen)
+		}
+	}
+
 }
