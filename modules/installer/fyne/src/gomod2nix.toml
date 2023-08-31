@@ -1,0 +1,90 @@
+schema = 3
+
+[mod]
+  [mod."fyne.io/fyne"]
+    version = "v1.4.3"
+    hash = "sha256-mCyou2czkUfBSIAmP+dt0hb8eGf0qHG0JeV2wLqlC7M="
+  [mod."fyne.io/fyne/v2"]
+    version = "v2.3.5"
+    hash = "sha256-eJPXVDVPsHiTpByRtaNYXWDZBi3vSS3hHheQbtT+PhY="
+  [mod."fyne.io/systray"]
+    version = "v1.10.1-0.20230602210930-b6a2d6ca2a7b"
+    hash = "sha256-YVUPIjYqSJGVUMZ8sGrvFdhYwVC4KwinUiflYcHBmmY="
+  [mod."github.com/davecgh/go-spew"]
+    version = "v1.1.1"
+    hash = "sha256-nhzSUrE1fCkN0+RL04N4h8jWmRFPPPWbCuDc7Ss0akI="
+  [mod."github.com/fredbi/uri"]
+    version = "v0.1.0"
+    hash = "sha256-ojtnZu7limA6hc4gF5nCrHKBa38F7E9a3qP418ntbD4="
+  [mod."github.com/fsnotify/fsnotify"]
+    version = "v1.5.4"
+    hash = "sha256-iPuInpDAJvDeSTr6to713J/fTOWdQIWlLXWAuWIs2Bw="
+  [mod."github.com/fyne-io/gl-js"]
+    version = "v0.0.0-20220119005834-d2da28d9ccfe"
+    hash = "sha256-g9A5P7gog8EJ/7721pJgfNJIpmHxf1c65t/4O7F1U+Q="
+  [mod."github.com/fyne-io/glfw-js"]
+    version = "v0.0.0-20220120001248-ee7290d23504"
+    hash = "sha256-yUVII9ALqy7ofzlZ6M6Vii7BoTwuvOo8hcK0uVsIv6M="
+  [mod."github.com/fyne-io/image"]
+    version = "v0.0.0-20220602074514-4956b0afb3d2"
+    hash = "sha256-P3gYt6kFHTRbckux+k6GwI+b5E8jW8Wg2XD7y04wxQs="
+  [mod."github.com/go-gl/gl"]
+    version = "v0.0.0-20211210172815-726fda9656d6"
+    hash = "sha256-Xgq47dg2BWTKBh2yzEIeb/ZhiSaBOPC1CdWekbiIw2Q="
+  [mod."github.com/go-gl/glfw/v3.3/glfw"]
+    version = "v0.0.0-20221017161538-93cebf72946b"
+    hash = "sha256-24raMafLcNIy3v5IevsiJ7NXP228VPVBuiJegkOVZvQ="
+  [mod."github.com/go-text/typesetting"]
+    version = "v0.0.0-20230405155246-bf9c697c6e16"
+    hash = "sha256-mUpiWyKzqJXWFTHBHBpIeeGAdL5joFYP/I+x1fEy7lw="
+  [mod."github.com/godbus/dbus/v5"]
+    version = "v5.1.0"
+    hash = "sha256-xOCMJpQK3KTmHTPn/CdqI4j0eENCtMmJDgAIoYqYOEY="
+  [mod."github.com/goki/freetype"]
+    version = "v0.0.0-20220119013949-7a161fd3728c"
+    hash = "sha256-jpdGWAhugxXpKg9AV04Cr2vtwFiXG9ujwJoo5sExxd4="
+  [mod."github.com/gopherjs/gopherjs"]
+    version = "v1.17.2"
+    hash = "sha256-uNUK9RJXHaa8pIYmUp3xd3lWwwpEhJCXdnz+QpQT6js="
+  [mod."github.com/jsummers/gobmp"]
+    version = "v0.0.0-20151104160322-e2ba15ffa76e"
+    hash = "sha256-gbZMmXtEykh5TjCqAXIWwu3nKFcNLsl/9+Xo2WzaeWY="
+  [mod."github.com/pmezard/go-difflib"]
+    version = "v1.0.0"
+    hash = "sha256-/FtmHnaGjdvEIKAJtrUfEhV7EVo5A/eYrtdnUkuxLDA="
+  [mod."github.com/srwiley/oksvg"]
+    version = "v0.0.0-20220731023508-a61f04f16b76"
+    hash = "sha256-3SNNB7q8zu3NBfXCnfosfAw8+/ADUv3VPVdnHux0zzo="
+  [mod."github.com/srwiley/rasterx"]
+    version = "v0.0.0-20210519020934-456a8d69b780"
+    hash = "sha256-eRqIAa3BB/f77lSRQmwtDttBZtEJkh193Gb75r22CG8="
+  [mod."github.com/stretchr/testify"]
+    version = "v1.8.4"
+    hash = "sha256-MoOmRzbz9QgiJ+OOBo5h5/LbilhJfRUryvzHJmXAWjo="
+  [mod."github.com/tevino/abool"]
+    version = "v1.2.0"
+    hash = "sha256-rmsOhWdU9huKJd0YEvxo4gZhCgZgUy5slFAhYvAXvXA="
+  [mod."github.com/yuin/goldmark"]
+    version = "v1.4.13"
+    hash = "sha256-GVwFKZY6moIS6I0ZGuio/WtDif+lkZRfqWS6b4AAJyI="
+  [mod."golang.org/x/image"]
+    version = "v0.3.0"
+    hash = "sha256-d6/w/CwI5GRGjuOGA7L7x4rEPfcHAVV3ZzsKxKmMYR4="
+  [mod."golang.org/x/mobile"]
+    version = "v0.0.0-20211207041440-4e6c2922fdee"
+    hash = "sha256-tB+w43SftNNghxi8QMRwXrK+LxrPrlE4sStwFSYJF3g="
+  [mod."golang.org/x/net"]
+    version = "v0.0.0-20220722155237-a158d28d115b"
+    hash = "sha256-TccMT2GgC1qKp8Yxk1zShJVvr29GemCqKSNJeYkjLo4="
+  [mod."golang.org/x/sys"]
+    version = "v0.0.0-20220722155257-8c9f86f7a55f"
+    hash = "sha256-mXgFTb2vfUEjTPA6PX7CZTvKGJWaxoU2QplyI1GjC+w="
+  [mod."golang.org/x/text"]
+    version = "v0.6.0"
+    hash = "sha256-+bpeRWR3relKACdal6NPj+eP5dnWCplTViArSN7/qA4="
+  [mod."gopkg.in/yaml.v3"]
+    version = "v3.0.1"
+    hash = "sha256-FqL9TKYJ0XkNwJFnq9j0VvJ5ZUU1RvH/52h/f5bkYAU="
+  [mod."honnef.co/go/js/dom"]
+    version = "v0.0.0-20210725211120-f030747120f2"
+    hash = "sha256-pEvwYq6ESalO0AHaYDm77Z/0DkragcT8wm7pOvBR/6Y="

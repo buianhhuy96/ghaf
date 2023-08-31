@@ -15,7 +15,8 @@
     pkgs = import nixpkgs {inherit system;};
     systemImgDrv = systemImgCfg.config.system.build.${systemImgCfg.config.formatAttr};
 
-    installerScript = pkgs.callPackage ../modules/installer/pterm  { inherit pkgs; systemImgDrv = "${systemImgDrv}/nixos.img";  };
+    
+    installModule = (import ../modules/installer/installer-graphic.nix { inherit pkgs; inherit lib;  systemImgDrv = "${systemImgDrv}";});
     #import ../modules/installer/installer.nix { inherit pkgs; systemImgDrv = "${systemImgDrv}/nixos.img";  inherit (pkgs) runtimeShell; };
 
     installerImgCfg = lib.nixosSystem {
@@ -36,10 +37,8 @@
 
             ghaf = {
               profiles.installer.enable = true;
-              #profiles.applications.enable = true;
+              profiles.applications.enable = true;
             };
-            environment.systemPackages = [installerScript];
-            environment.noXlibs = false;
             # For WLAN firmwares
             hardware.enableRedistributableFirmware = true;
 
@@ -48,23 +47,16 @@
               wireless.enable = lib.mkForce false;
               networkmanager.enable = true;
             };
-            isoImage.squashfsCompression = "lz4";
+            
+            
+
           })
 
-          {
-            # TODO
-            environment.loginShellInit = 
-                ''
-                ${installerScript}/bin/ghaf-installer
-                '';
-          }
-
           
-
+          installModule
           formatModule
         ]
         ++ (import ../modules/module-list.nix) ;
-        #++ (import ../lib/ghaf-modules.nix);
     };
   in {
     name = "${name}-installer";
