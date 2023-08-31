@@ -8,14 +8,13 @@
   nixos-generators,
   lib,
 }: let
-  formatModule = nixos-generators.nixosModules.install-iso;
+  formatModule = nixos-generators.nixosModules.raw-efi;
   installer = {name, systemImgCfg}: let
-    system = systemImgCfg.config.nixpkgs.hostPlatform.system;
+    system = "x86_64-linux";
 
     pkgs = import nixpkgs {inherit system;};
-    systemImgDrv = systemImgCfg.config.system.build.${systemImgCfg.config.formatAttr};
 
-    installerScript = pkgs.callPackage ../modules/installer/pterm  { inherit pkgs; systemImgDrv = "${systemImgDrv}/nixos.img";  };
+    installerScript = pkgs.callPackage ../modules/installer/pterm  { inherit pkgs; systemImgCfg = systemImgCfg;  };
     #import ../modules/installer/installer.nix { inherit pkgs; systemImgDrv = "${systemImgDrv}/nixos.img";  inherit (pkgs) runtimeShell; };
 
     installerImgCfg = lib.nixosSystem {
@@ -48,7 +47,6 @@
               wireless.enable = lib.mkForce false;
               networkmanager.enable = true;
             };
-            isoImage.squashfsCompression = "lz4";
           })
 
           {
@@ -64,14 +62,17 @@
           formatModule
         ]
         ++ (import ../modules/module-list.nix) ;
-        #++ (import ../lib/ghaf-modules.nix);
     };
   in {
     name = "${name}-installer";
     inherit installerImgCfg system;
     installerImgDrv = installerImgCfg.config.system.build.${installerImgCfg.config.formatAttr};
   };
-  targets = map installer [{name = "generic-x86_64-debug"; systemImgCfg = self.nixosConfigurations.generic-x86_64-debug;}];
+  targets = map installer [{name = "general"; 
+                            # TODO: here we need to choose debug/rel version according to variant
+                            systemImgCfg = [ self.nixosConfigurations.dell-latitude-7330-laptop-debug
+                                             self.nixosConfigurations.dell-latitude-dev-debug
+                                             self.nixosConfigurations.dell-latitude-7230-tablet-debug ] ;}];
 in {
   packages = lib.foldr lib.recursiveUpdate {} (map ({name, system, installerImgDrv, ...}: {
     ${system}.${name} = installerImgDrv;

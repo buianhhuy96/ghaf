@@ -18,22 +18,28 @@ type installationStep int64
 const (
 	Welcome installationStep = iota
 	Wifi  
+	Image
 	Partitions  
 	Exit
 )
 const nextStep 	   =  ">>--Skip to next step------->>"
 const previousStep =  "<<--Back to previous step---<<"
 
-
-var second = time.Second
-var ghaf = "nixos.img"
-var connectionStatus = false
-var currentInstallationStep = Welcome
-
 type CommandOutput struct {
     message  []string
     errorcode int
 }
+type imageInfo struct {
+    name  string
+    location string
+}
+
+var second = time.Second
+var connectionStatus = false
+var currentInstallationStep = Welcome
+var images string
+var image2Install string
+
 
 
 func showcase(title string, seconds int, content func()) {
@@ -84,7 +90,7 @@ func welcomeScreen () {
 		area.Update(str)
 		time.Sleep(time.Second)
 	}
-	currentInstallationStep = Wifi
+	currentInstallationStep++
 	return
 }
 
@@ -150,13 +156,50 @@ func wifiScreen () {
 				pterm.Error.Printfln("Failed to connect to " + SSID)
 			}
 		}
-		
+	
+		currentInstallationStep++
 		
 }
 
+func imageScreen () {
+	imageSeparated := strings.Split(string(images),string("||"))
+	var imageList []string
+	for i,imageAndLocation := range imageSeparated {
+		if(i % 2 == 0){
+			imageList = append(imageList, imageAndLocation)
+		}		
+	}
+
+	imageList = append([]string{ nextStep }, imageList...)
+	imageList = append([]string{ previousStep }, imageList...)
+	selectedImage, _ := pterm.DefaultInteractiveSelect.
+							WithOptions(imageList).
+							Show("Please select image to install")
+	
+	if checkSkipStep(selectedImage) {
+		return
+	}
+
+	for i,imageAndLocation := range imageSeparated {
+		if selectedImage == imageAndLocation {
+			image2Install = imageSeparated[i+1]
+			break;
+		}	
+	}
+	
+	currentInstallationStep++
+
+}
+
 func partitionScreen () {
-	ghafImage, _ := os.Stat(ghaf)
-	imageSize := ghafImage.Size()
+
+	if len(image2Install) == 0 {
+		pterm.Error.Printfln("No image is selected for the installation")
+		currentInstallationStep--
+		return
+	}
+	image, _ := os.Stat(image2Install)
+	imageSize := image.Size()
 	drives := execCommand("lsblk", "-d", "-e7")
 	var drivesListHeading, selectedDrive string
 
@@ -174,7 +217,7 @@ func partitionScreen () {
 	} 
 
 	pterm.Info.Printfln("Selected: %s", pterm.Green(strings.TrimSpace(strings.Split(string(selectedDrive),string(32))[0])))
-	writeImage := "dd if=" + ghaf + " of=/dev/" +strings.TrimSpace(strings.Split(string(selectedDrive),string(32))[0])+ " conv=sync bs=4K status=progress";
+	writeImage := "dd if=" + image2Install + " of=/dev/" +strings.TrimSpace(strings.Split(string(selectedDrive),string(32))[0])+ " conv=sync bs=4K status=progress";
 	s := exec.Command("sudo", strings.Split(writeImage," ")...)
 	stdout, err := s.StderrPipe()
 	s.Start()
@@ -203,10 +246,11 @@ func partitionScreen () {
 	p.Add((int(imageSize)-lastProgessbarValue))
 	pterm.Info.Printfln("Installation Completed")
 
-	currentInstallationStep = Exit
+	currentInstallationStep++
 	return
 		
 }
+
 
 func main() {
 	for currentInstallationStep != Exit{
@@ -215,8 +259,10 @@ func main() {
 			showcase("Welcome", 2, welcomeScreen)
 		case Wifi:
 			showcase("Connect to network", 1, wifiScreen)
+		case Image:
+			showcase("Select image", 1, imageScreen)
 		case Partitions:
-			showcase("Choose Partitions", 1, partitionScreen)
+			showcase("Select partitions", 1, partitionScreen)
 		}
 	}
 
