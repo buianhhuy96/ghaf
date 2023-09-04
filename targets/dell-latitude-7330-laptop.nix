@@ -18,7 +18,28 @@
         microvm.devices = [
           {
             bus = "pci";
-            path = "0000:00:14.3";
+            path = "0000:72:00.0";
+          }
+
+          {
+            bus = "pci";
+            path = "0000:00:1f.0";
+          }
+          {
+            bus = "pci";
+            path = "0000:00:1f.3";
+          }
+          {
+            bus = "pci";
+            path = "0000:00:1f.4";
+          }
+          {
+            bus = "pci";
+            path = "0000:00:1f.5";
+          }
+          {
+            bus = "pci";
+            path = "0000:00:1f.6";
           }
         ];
 

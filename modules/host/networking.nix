@@ -34,6 +34,11 @@ in
               addressConfig.Address = "192.168.101.2/24";
             }
           ];
+          routes =  [
+            { routeConfig.Gateway = "192.168.101.1"; }
+          ];
+          linkConfig.RequiredForOnline = "routable";
+          linkConfig.ActivationPolicy = "always-up";
         };
         # Connect VM tun/tap device to the bridge
         # TODO configure this based on IF the netvm is enabled
