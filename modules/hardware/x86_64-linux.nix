@@ -25,6 +25,9 @@ in
       hardware.enableRedistributableFirmware = true;
       hardware.enableAllFirmware = true;
 
+      # Add NVMe support into initrd to be able to boot from it
+      boot.initrd.availableKernelModules = [ "nvme" "ahci" ];
+
       boot.loader = {
         efi.canTouchEfiVariables = true;
         systemd-boot.enable = true;
