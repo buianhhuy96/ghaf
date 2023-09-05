@@ -62,6 +62,7 @@
           ../modules/host
           ../modules/virtualization/microvm/microvm-host.nix
           ../modules/virtualization/microvm/netvm.nix
+          ../modules/virtualization/microvm/dockervm.nix
           {
             ghaf = {
               hardware.x86_64.common.enable = true;
@@ -71,6 +72,9 @@
               virtualization.microvm.netvm = {
                 enable = true;
                 extraModules = netvmExtraModules;
+              };
+              virtualization.microvm.dockervm = {
+                enable = true;
               };
 
               # Enable all the default UI applications
