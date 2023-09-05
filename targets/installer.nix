@@ -71,8 +71,8 @@
   targets = map installer [{name = "general"; 
                             # TODO: here we need to choose debug/rel version according to variant
                             systemImgCfg = [ self.nixosConfigurations.dell-latitude-7330-laptop-debug
-                                             self.nixosConfigurations.dell-latitude-dev-debug
-                                             self.nixosConfigurations.dell-latitude-7230-tablet-debug ] ;}];
+                                             self.nixosConfigurations.dell-latitude-7230-tablet-debug
+                                             self.nixosConfigurations.dell-latitude-dev-debug ] ;}];
 in {
   packages = lib.foldr lib.recursiveUpdate {} (map ({name, system, installerImgDrv, ...}: {
     ${system}.${name} = installerImgDrv;

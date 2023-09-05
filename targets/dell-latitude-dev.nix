@@ -13,25 +13,6 @@
   system = "x86_64-linux";
   formatModule = nixos-generators.nixosModules.raw-efi;
   dell-dev-x86 = variant: extraModules: let
-    netvmExtraModules = [
-      {
-        microvm.devices = [
-          {
-            bus = "pci";
-            path = "0000:00:14.3";
-          }
-        ];
-
-        # For WLAN firmwares
-        hardware.enableRedistributableFirmware = true;
-
-        networking.wireless = {
-          enable = true;
-
-          # networks."SSID_OF_NETWORK".psk = "WPA_PASSWORD";
-        };
-      }
-    ];
     hostConfiguration = lib.nixosSystem {
       inherit system;
       specialArgs = {inherit lib;};
@@ -40,17 +21,20 @@
           microvm.nixosModules.host
           ../modules/host
           ../modules/virtualization/microvm/microvm-host.nix
-          ../modules/virtualization/microvm/netvm.nix
           {
+              services.dci = {
+                enable = true;
+                compose-path = "/var/fogdata/docker-compose.yml";
+                pat-path = "/var/fogdata/PAT.pat";
+              };
+
             ghaf = {
               hardware.x86_64.common.enable = true;
 
               virtualization.microvm-host.enable = true;
               host.networking.enable = true;
-              virtualization.microvm.netvm = {
-                enable = true;
-                extraModules = netvmExtraModules;
-              };
+
+
 
               # Enable all the default UI applications
               profiles = {
