@@ -15,7 +15,7 @@ pkgs.buildGo120Module {
 
   # TODO: here we need to choose debug/rel version according to variant
   ldflags = [
-    "-X main.images=dell-latitude-7330-laptop-debug||${system0}||dell-latitude-7230-tablet-debug||${system1}||dell-latitude-dev-debug||${system2}"
+    "-X ghaf-installer/global.Images=dell-latitude-7330-laptop-debug||${system0}||dell-latitude-7230-tablet-debug||${system1}||dell-latitude-dev-debug||${system2}"
   ];
 
     # ...
