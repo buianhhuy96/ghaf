@@ -87,6 +87,12 @@
             };
           }
 
+          {
+            systemd.network.networks."10-virbr0".routes = lib.mkForce [
+              { routeConfig.Gateway = "192.168.101.1"; }
+            ];
+          }
+
           formatModule
 
           #TODO: how to handle the majority of laptops that need a little
