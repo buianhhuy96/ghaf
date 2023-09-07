@@ -1,7 +1,6 @@
 package screen
 
-// "unicode/utf8"
-
+// Defines constants and variables for installation process
 const nextScreenMsg = ">>--Skip to next step------->>"
 const previousScreenMsg = "<<--Back to previous step---<<"
 
@@ -22,15 +21,25 @@ func backToPreviousScreen() {
 
 func checkSkipScreen(input string) bool {
 	if input == nextScreenMsg {
-		currentInstallationScreen++
+		goToNextScreen()
 		return true
 	} else if input == previousScreenMsg {
-		currentInstallationScreen--
+		backToPreviousScreen()
 		return true
 	}
 	return false
 }
 
+/*********** Storage for all screens of installation process *********/
+/**** To insert new screen, the format should be:
+
+	<Screen order>, {<Screen Heading>,<Display function>}
+
+	* Screen order: type integer, must start from 0 and be adjacent
+	* Screen Heading: type string, message to display on the heading
+	* Display function: type func(), function to perform actions and display as screen
+
+*****/
 var Screens = map[int](struct {
 	Heading string
 	Show    func()

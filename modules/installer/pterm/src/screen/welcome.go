@@ -5,7 +5,6 @@ import (
 
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
-	//"unicode/utf8"
 )
 
 func WelcomeScreen() {

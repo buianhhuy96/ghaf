@@ -3,15 +3,13 @@ package screen
 import (
 	"bufio"
 	"ghaf-installer/global"
+	"math"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 
 	"github.com/pterm/pterm"
-
-	//"unicode/utf8"
-	"math"
 )
 
 func PartitionScreen() {
@@ -20,9 +18,12 @@ func PartitionScreen() {
 
 	drivesList = append([]string{nextScreenMsg}, drivesList...)
 	drivesList = append([]string{previousScreenMsg}, drivesList...)
+
+	// If no images are selected to install
 	if len(global.Image2Install) == 0 {
 		pterm.Error.Printfln("No image is selected for the installation")
 	} else {
+		// Get all block devices
 		drives := global.ExecCommand("lsblk", "-d", "-e7")
 		if len(drives.Message) > 0 {
 			drivesListHeading = "  " + drives.Message[0]
@@ -31,10 +32,12 @@ func PartitionScreen() {
 		}
 	}
 
+	// Print options to select device to install image
 	selectedDrive, _ = pterm.DefaultInteractiveSelect.
 		WithOptions(drivesList).
 		Show("Please select device to install Ghaf \n  " + drivesListHeading)
 
+	// If a skip option selected
 	if checkSkipScreen(selectedDrive) {
 		return
 	}
@@ -50,6 +53,8 @@ func PartitionScreen() {
 	if err != nil {
 		pterm.Info.Printfln("Error during installation")
 	}
+
+	// No error occur, collect progress to print as percentage
 	lastProgessbarValue := int(0)
 	p, _ := pterm.DefaultProgressbar.WithTotal(int(imageSize)).WithTitle("Copied").Start()
 	counter := -1
@@ -70,6 +75,8 @@ func PartitionScreen() {
 
 	s.Wait()
 	p.Add((int(imageSize) - lastProgessbarValue))
+
+	// dd command finished
 	pterm.Info.Printfln("Installation Completed")
 
 	goToNextScreen()
