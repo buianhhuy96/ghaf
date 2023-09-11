@@ -14,8 +14,7 @@
 
     pkgs = import nixpkgs {inherit system;};
 
-    installerScript = pkgs.callPackage ../modules/installer/pterm  { inherit pkgs; systemImgCfg = systemImgCfg;  };
-    #import ../modules/installer/installer.nix { inherit pkgs; systemImgDrv = "${systemImgDrv}/nixos.img";  inherit (pkgs) runtimeShell; };
+    installerScript = pkgs.callPackage ../modules/installer  { inherit pkgs; systemImgCfg = systemImgCfg;  };
 
     installerImgCfg = lib.nixosSystem {
       inherit system;
@@ -56,8 +55,6 @@
                 ${installerScript}/bin/ghaf-installer
                 '';
           }
-
-          
 
           formatModule
         ]
