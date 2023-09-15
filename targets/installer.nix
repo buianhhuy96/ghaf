@@ -8,7 +8,7 @@
   nixos-generators,
   lib,
 }: let
-  formatModule = nixos-generators.nixosModules.install-iso;
+  formatModule = nixos-generators.nixosModules.iso;
   installer = {name, systemImgCfg}: let
     system = systemImgCfg.config.nixpkgs.hostPlatform.system;
 
@@ -24,8 +24,7 @@
       specialArgs = {inherit lib;};
       modules =
         [
-          ../modules/host
-          
+          ../modules/host        
             
           ({modulesPath, lib, ...}: {
             imports = [ (modulesPath + "/profiles/all-hardware.nix") ];
@@ -48,6 +47,7 @@
               networkmanager.enable = true;
             };
             
+            isoImage.squashfsCompression = "lz4";  
             
 
           })

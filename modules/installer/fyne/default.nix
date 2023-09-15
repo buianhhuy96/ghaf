@@ -16,9 +16,11 @@ pkgs.buildGo120Module {
     "-X ghaf-fyne/tutorials.ghaf=${systemImgDrv}"
   ];
   
+  tags = [ "wayland" ];
   nativeBuildInputs = [pkgs.pkg-config];
   
-  buildInputs = with pkgs; [xorg.libX11 xorg.libXcursor xorg.libXrandr xorg.libXinerama xorg.libXi libGLU xorg.libXxf86vm] ;
-  
+  buildInputs = with pkgs; #[xorg.libX11 xorg.libXcursor xorg.libXrandr xorg.libXinerama xorg.libXi libGLU xorg.libXxf86vm] ;
+    [wayland wayland-protocols libxkbcommon extra-cmake-modules libGL
+    xorg.libX11];
   excludedPackages = ["./fyne_settings/settings"];
 }

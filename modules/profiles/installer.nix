@@ -31,6 +31,6 @@ in
       };
 
       # Automatically log in at the virtual consoles.
-      services.getty.autologinUser = mkDefault "ghaf";
+      services.getty.autologinUser = mkForce "ghaf";
     };
   }

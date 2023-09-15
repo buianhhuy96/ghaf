@@ -3,32 +3,40 @@
 
 {pkgs, lib, systemImgDrv, ...}:
 let
-  installerScript = pkgs.callPackage ./fyne  { inherit pkgs; systemImgDrv = "/etc/nixos.img";  };
+  installerScript = pkgs.callPackage ./calamares  {  };
+  installerScript2 = pkgs.callPackage ./calamares/extension  {  };
 in
 {
-  isoImage.edition = "plasma5";
-  isoImage.squashfsCompression = "lz4";          
+  
 
   environment.noXlibs = false;
   
-  environment.systemPackages = [installerScript];  
-  environment.etc."nixos.img" = {
-              source = "${systemImgDrv}/nixos.img"; 
-            };
+  environment.systemPackages = with pkgs; [
+    libsForQt5.kpmcore
+    calamares-nixos
+    installerScript2
+    # Get list of locales
+    glibcLocales
+    ];  
 
-  services.xserver = {
-    enable = true;
-    desktopManager.plasma5.enable = true;
-    # Automatically login as nixos.
-    displayManager = {
-      sddm.enable = true;
-      autoLogin = {
-        enable = true;
-        user = "ghaf";
-      };
- };
+  environment.variables = {
+    QT_QPA_PLATFORM = "wayland";
+  };
 
-    };
+  # Support choosing from any locale
+  i18n.supportedLocales = [ "all" ];
+  #services.xserver = {
+  #  enable = true;
+  #  # Automatically login as nixos.
+  #  displayManager = {
+  #    startx.enable = true;
+  #    autoLogin = {
+  #      enable = true;
+  #      user = "ghaf";
+  #    };
+  #  };
+#
+  #  };
   #hardware.nvidia.package = boot.kernelPackages.nvidiaPackages.stable;
   hardware.opengl = {
     enable = true;
