@@ -8,7 +8,7 @@
   nixos-generators,
   lib,
 }: let
-  formatModule = nixos-generators.nixosModules.raw-efi;
+  formatModule = nixos-generators.nixosModules.iso;
   installer = {name, systemImgCfg}: let
     system = "x86_64-linux";
 
@@ -57,6 +57,9 @@
           }
 
           formatModule
+          {
+            isoImage.squashfsCompression = "lz4"; 
+          }
         ]
         ++ (import ../modules/module-list.nix) ;
     };
