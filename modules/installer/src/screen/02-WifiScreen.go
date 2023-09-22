@@ -13,15 +13,15 @@ func (m ScreensMethods) WifiScreenHeading() string {
 }
 
 func (m ScreensMethods) WifiScreen() {
-	wifiConnect := global.ExecCommand("nmcli", "-t", "--fields", "SSID,SIGNAL,SECURITY", "dev", "wifi")
+	wifiConnect, _ := global.ExecCommand("nmcli", "-t", "--fields", "SSID,SIGNAL,SECURITY", "dev", "wifi")
 	skipWifi := false
-	if len(wifiConnect.Message) == 0 {
+	if len(wifiConnect) == 0 {
 		skipWifi = true
 		goToNextScreen()
 		return
 	}
 	for !ConnectionStatus && !skipWifi {
-		wifiList := wifiConnect.Message[0 : len(wifiConnect.Message)-1]
+		wifiList := wifiConnect[0 : len(wifiConnect)-1]
 		longestWifiSSID := 0
 		for _, wifi := range wifiList {
 			wSSID := strings.Split(string(wifi), ":")[0]
@@ -61,10 +61,13 @@ func (m ScreensMethods) WifiScreen() {
 			WithMask("*").
 			Show("Password (If no password, leave empty)")
 
-		wifiConnectingSpinner, _ := pterm.DefaultSpinner.WithShowTimer(false).WithRemoveWhenDone(true).Start("Connecting to " + SSID)
-		connection := global.ExecCommand("nmcli", "dev", "wifi", "connect", SSID, "password", password)
-		wifiConnectingSpinner.Stop() //pterm.Println(connection.errorcode) // Blank line
-		if connection.Errorcode == 0 {
+		wifiConnectingSpinner, _ := pterm.DefaultSpinner.
+			WithShowTimer(false).
+			WithRemoveWhenDone(true).
+			Start("Connecting to " + SSID)
+		_, err := global.ExecCommand("nmcli", "dev", "wifi", "connect", SSID, "password", password)
+		wifiConnectingSpinner.Stop()
+		if err == 0 {
 			ConnectionStatus = true
 			pterm.Info.Printfln("Connected")
 		} else {

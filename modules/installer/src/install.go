@@ -25,7 +25,6 @@ func main() {
 
 	// Look for all screens in folder ./screen
 	screen.InitScreen()
-
 	for (screen.GetCurrentScreen()) < len(screen.Screens) {
 		currentScreen := screen.GetCurrentScreen()
 
