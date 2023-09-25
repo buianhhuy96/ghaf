@@ -33,7 +33,7 @@ in {
 
         echo "Login ghcr.io"
 
-        echo $PAT | ${pkgs.docker}/bin/docker login ghcr.io -u $USR --password-stdin
+        echo $PAT | ${pkgs.docker}/bin/docker login ghcr.io -u $USR --password-stdin || echo 'login to ghcr.io failed continue as is'
         echo "Start docker-compose"
         ${pkgs.docker-compose}/bin/docker-compose -f $DCPATH up
       '';
