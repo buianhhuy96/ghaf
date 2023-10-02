@@ -14,6 +14,7 @@ const nextScreenMsg = ">>--Skip to next step------->>"
 const previousScreenMsg = "<<--Back to previous step---<<"
 
 var ConnectionStatus = false
+var selectedPartition string
 var currentInstallationScreen = 0
 var Screens = make(map[int]string)
 var screenDir = "./screen"

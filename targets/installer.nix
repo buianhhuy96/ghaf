@@ -52,7 +52,7 @@
             # TODO
             environment.loginShellInit = 
                 ''
-                ${installerScript}/bin/ghaf-installer
+                sudo ${installerScript}/bin/ghaf-installer
                 '';
           }
 

@@ -50,7 +50,7 @@ func (m ScreensMethods) PartitionScreen() {
 
 	/***************** Start Installing *******************/
 
-	selectedPartition := strings.TrimSpace(strings.Split(string(selectedOption), global.SPACE_CHAR)[0])
+	selectedPartition = strings.TrimSpace(strings.Split(string(selectedOption), global.SPACE_CHAR)[0])
 	pterm.Info.Printfln("Selected: %s", pterm.Green(selectedPartition))
 	writeImage := "dd if=" + global.Image2Install +
 		" of=/dev/" + selectedPartition +
@@ -68,37 +68,8 @@ func (m ScreensMethods) PartitionScreen() {
 	progress.Close()
 	pterm.Info.Printfln("Installation Completed")
 
-	ghafMountingSpinner, _ := pterm.DefaultSpinner.
-		WithShowTimer(false).
-		WithRemoveWhenDone(true).
-		Start("Mounting Partition")
-
-	mountGhaf("/dev/" + selectedPartition)
-
-	ghafMountingSpinner.Stop()
-
-	pterm.Info.Printfln("Ghaf has been mounted to /boot and /root")
 	goToNextScreen()
 	return
-}
-
-func mountGhaf(disk string) {
-	_, err := global.ExecCommand("mkdir", "-p", "/home/ghaf/boot")
-	if err != 0 {
-		panic(err)
-	}
-	_, err = global.ExecCommand("mkdir", "-p", "/home/ghaf/root")
-	if err != 0 {
-		panic(err)
-	}
-	_, err = global.ExecCommand("sudo", "mount", disk+"p1", "/home/ghaf/boot")
-	if err != 0 {
-		panic(err)
-	}
-	_, err = global.ExecCommand("sudo", "mount", disk+"p2", "/home/ghaf/root")
-	if err != 0 {
-		panic(err)
-	}
 }
 
 func drawInstallingProgress(progress io.ReadCloser) {
