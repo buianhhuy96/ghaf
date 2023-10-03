@@ -13,7 +13,7 @@ in
 pkgs.buildGo120Module {
   name = "ghaf-installer";
   src = ./src;
-  vendorSha256 = "sha256-SyYOCpEyZNSwgnQmkDxlO5HyVnz/l7nCc8ORN+J4eI8=";
+  vendorSha256 = "sha256-MKMsvIP8wMV86dh9Y5CWhgTQD0iRpzxk7+0diHkYBUo=";
   proxyVendor=true;
 
   # TODO: here we need to choose debug/rel version according to variant

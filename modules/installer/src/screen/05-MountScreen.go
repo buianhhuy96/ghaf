@@ -2,16 +2,22 @@ package screen
 
 import (
 	"ghaf-installer/global"
+	"time"
 
 	"github.com/pterm/pterm"
 )
 
 // Method to get the heading message of screen
 func (m ScreensMethods) MountScreenHeading() string {
-	return "Select partitions and install"
+	return "Mount partition for configuring"
 }
 
 func (m ScreensMethods) MountScreen() {
+
+	if selectedPartition == "" {
+		goToNextScreen()
+		return
+	}
 
 	ghafMountingSpinner, _ := pterm.DefaultSpinner.
 		WithShowTimer(false).
@@ -20,20 +26,22 @@ func (m ScreensMethods) MountScreen() {
 
 	mountGhaf("/dev/" + selectedPartition)
 
+	time.Sleep(2)
 	ghafMountingSpinner.Stop()
 
-	pterm.Info.Printfln("Ghaf has been mounted to /boot and /root")
+	pterm.Info.Printfln("Ghaf has been mounted to /root")
+
 	goToNextScreen()
 	return
 }
 
 func mountGhaf(disk string) {
-	_, err := global.ExecCommand("mkdir", "-p", "/home/ghaf/root")
+	_, err := global.ExecCommand("mkdir", "-p", mountPoint)
 	if err != 0 {
 		panic(err)
 	}
 
-	_, err = global.ExecCommand("sudo", "mount", disk+"p2", "/home/ghaf/root")
+	_, err = global.ExecCommand("sudo", "mount", disk+"p2", mountPoint)
 	if err != 0 {
 		panic(err)
 	}

@@ -18,6 +18,7 @@ var selectedPartition string
 var currentInstallationScreen = 0
 var Screens = make(map[int]string)
 var screenDir = "./screen"
+var mountPoint = "/home/ghaf/root"
 
 func GetCurrentScreen() int {
 	return currentInstallationScreen

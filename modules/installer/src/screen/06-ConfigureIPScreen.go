@@ -5,26 +5,38 @@ import (
 	"net"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/pterm/pterm"
 )
 
+var IPConfigFile = "/var/netvm/netconf/Wired1.nmconnection"
+
 // Method to get the heading message of screen
 func (m ScreensMethods) ConfigureIPScreenHeading() string {
-	return "Select partitions and install"
+	return "Configure IP for destination system"
 }
 
 func (m ScreensMethods) ConfigureIPScreen() {
 
+	// If there is partition selected for install
+	if selectedPartition == "" {
+		goToNextScreen()
+		return
+	}
+
 	var sysIP string
 	setupIP := false
+	// Ask user for input IP address
 	for !setupIP {
 		userIP, _ := pterm.DefaultInteractiveTextInput.
 			WithMultiLine(false).
 			Show("IP address for destination system (default: 192.168.248.1/24)")
+		// If leave empty, use default IP
 		if strings.TrimSpace(userIP) == "" {
 			sysIP = "192.168.248.1/24"
 			setupIP = true
+			// If not empty, validate if IP is valid
 		} else if validateIP(strings.TrimSpace(userIP)) {
 			sysIP = strings.TrimSpace(userIP)
 			setupIP = true
@@ -34,7 +46,12 @@ func (m ScreensMethods) ConfigureIPScreen() {
 	}
 
 	pterm.Info.Printfln("System IP address is: " + sysIP)
+	// Write to IP config file
 	writeConnectionFile(sysIP)
+
+	time.Sleep(2)
+
+	pterm.Info.Printfln("Config for IP address has been copied to destination system")
 	goToNextScreen()
 	return
 }
@@ -72,11 +89,12 @@ method=auto
 
 [proxy]`
 
-	_, err_int := global.ExecCommand("mkdir", "-p", "/home/ghaf/root/var/netvm/netconf/")
+	_, err_int := global.ExecCommand("mkdir", "-p", mountPoint+"/var/netvm/netconf/")
 	if err_int != 0 {
 		panic(err_int)
 	}
-	f, err := os.Create("/home/ghaf/root/var/netvm/netconf/Wired1.nmconnection")
+
+	f, err := os.Create(mountPoint + IPConfigFile)
 	defer func() {
 		f.Close()
 	}()
