@@ -70,17 +70,17 @@ func validateIP(ip string) bool {
 
 func writeConnectionFile(ip string) {
 	content := `[connection]
-id=Wired1 
-uuid=d3ba46d5-6065-37c7-94a7-0df969aca945   
+id=Wired1
+uuid=d3ba46d5-6065-37c7-94a7-0df969aca945
 type=ethernet
 autoconnect-priority=-999
-interface-name=enp0s9f0
+interface-name=enp0s10f0
 timestamp=1695890834
 
 [ethernet]
 
 [ipv4]
-address1=` + ip + ` 
+address1=` + ip + `
 method=auto
 
 [ipv6]
@@ -110,6 +110,11 @@ method=auto
 	}
 	err = f.Close()
 	if err != nil {
+		panic(err)
+	}
+
+	_, err_int = global.ExecCommand("sudo", "chmod", "600", mountPoint+IPConfigFile)
+	if err_int != 0 {
 		panic(err)
 	}
 }
