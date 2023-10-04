@@ -31,6 +31,10 @@ in
 
         traceroute
         dig
+
+        vim
+        bridge-utils
+        sshpass
       ];
     };
   }
