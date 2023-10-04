@@ -35,6 +35,13 @@
           useNetworkd = true;
         };
 
+        networking.networkmanager = {
+          enable=true;
+          unmanaged = [
+            "ethint0"
+          ];
+        };
+
         microvm.interfaces = [
           {
             type = "tap";
@@ -45,7 +52,13 @@
 
         networking.nat = {
           enable = true;
-          internalInterfaces = ["ethint0"];
+          internalIPs = [ "192.168.0.0/16" ];
+          externalInterface = "enp0s10f0";
+          extraCommands = ''
+            iptables -A INPUT -p tcp --dport 4222 -j ACCEPT;
+            iptables -t nat -A PREROUTING -p tcp --dport 4222 -j DNAT --to-destination 192.168.101.11:4222;
+            iptables -t nat -A POSTROUTING -p tcp -d 192.168.101.11 --dport 4222 -j SNAT --to-source 192.168.248.1:4222;
+          '';
         };
 
         # Set internal network's interface name to ethint0
@@ -72,6 +85,18 @@
             linkConfig.ActivationPolicy = "always-up";
           };
         };
+
+	microvm.shares = [
+          {
+	    # On the host
+	    source = "/var/netvm/netconf";
+	    # In the MicroVM
+	    mountPoint = "/etc/NetworkManager/system-connections";
+	    tag = "netconf";
+	    proto = "virtiofs";
+	    socket = "netconf.sock";
+	  }
+        ];
 
         microvm.qemu.bios.enable = false;
         microvm.storeDiskType = "squashfs";
