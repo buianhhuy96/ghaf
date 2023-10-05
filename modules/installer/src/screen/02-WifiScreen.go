@@ -13,7 +13,15 @@ func (m ScreensMethods) WifiScreenHeading() string {
 }
 
 func (m ScreensMethods) WifiScreen() {
+
+	wifiConnectSpinner, _ := pterm.DefaultSpinner.
+		WithShowTimer(false).
+		WithRemoveWhenDone(true).
+		Start("Mounting Partition")
+
 	wifiConnect, _ := global.ExecCommand("nmcli", "-t", "--fields", "SSID,SIGNAL,SECURITY", "dev", "wifi")
+	wifiConnectSpinner.Stop()
+
 	skipWifi := false
 	if len(wifiConnect) == 0 {
 		skipWifi = true

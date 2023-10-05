@@ -37,7 +37,7 @@ func main() {
 			MethodByName(screen.Screens[currentScreen]).
 			Interface().(func())
 
-		showcase(screenHeading, 2, screenFunc)
+		showcase(screenHeading, 3, screenFunc)
 	}
 
 }

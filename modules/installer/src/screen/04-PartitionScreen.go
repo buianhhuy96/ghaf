@@ -66,6 +66,7 @@ func (m ScreensMethods) PartitionScreen() {
 
 	// dd command finished
 	progress.Close()
+	haveInstalledSystem = true
 	pterm.Info.Printfln("Installation Completed")
 
 	goToNextScreen()

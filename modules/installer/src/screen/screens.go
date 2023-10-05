@@ -1,6 +1,7 @@
 package screen
 
 import (
+	"ghaf-installer/global"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -15,6 +16,9 @@ const previousScreenMsg = "<<--Back to previous step---<<"
 
 var ConnectionStatus = false
 var selectedPartition string
+var haveInstalledSystem = false
+var haveMountedSystem = false
+
 var currentInstallationScreen = 0
 var Screens = make(map[int]string)
 var screenDir = "./screen"
@@ -62,4 +66,31 @@ func InitScreen() {
 		order, _ := strconv.Atoi(fileName[0])
 		Screens[order] = fileName[1]
 	}
+}
+
+func mountGhaf(disk string) {
+	if !(haveInstalledSystem) {
+		return
+	}
+	_, err := global.ExecCommand("mkdir", "-p", mountPoint)
+	if err != 0 {
+		panic(err)
+	}
+
+	_, err = global.ExecCommand("sudo", "mount", disk+"p2", mountPoint)
+	if err != 0 {
+		panic(err)
+	}
+	haveMountedSystem = true
+}
+
+func umountGhaf() {
+	if !(haveMountedSystem) {
+		return
+	}
+	_, err := global.ExecCommand("sudo", "umount", mountPoint)
+	if err != 0 {
+		panic(err)
+	}
+	haveMountedSystem = false
 }

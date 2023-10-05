@@ -1,7 +1,6 @@
 package screen
 
 import (
-	"ghaf-installer/global"
 	"time"
 
 	"github.com/pterm/pterm"
@@ -14,7 +13,7 @@ func (m ScreensMethods) MountScreenHeading() string {
 
 func (m ScreensMethods) MountScreen() {
 
-	if selectedPartition == "" {
+	if !(haveInstalledSystem) {
 		goToNextScreen()
 		return
 	}
@@ -24,25 +23,16 @@ func (m ScreensMethods) MountScreen() {
 		WithRemoveWhenDone(true).
 		Start("Mounting Partition")
 
+	// Mount ghaf system
 	mountGhaf("/dev/" + selectedPartition)
 
+	// Wait time for user to read the message
 	time.Sleep(2)
 	ghafMountingSpinner.Stop()
 
 	pterm.Info.Printfln("Ghaf has been mounted to /root")
 
+	time.Sleep(1)
 	goToNextScreen()
 	return
-}
-
-func mountGhaf(disk string) {
-	_, err := global.ExecCommand("mkdir", "-p", mountPoint)
-	if err != 0 {
-		panic(err)
-	}
-
-	_, err = global.ExecCommand("sudo", "mount", disk+"p2", mountPoint)
-	if err != 0 {
-		panic(err)
-	}
 }

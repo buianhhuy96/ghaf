@@ -9,7 +9,7 @@ import (
 
 func (m ScreensMethods) WelcomeScreen() {
 	area, _ := pterm.DefaultArea.WithCenter().WithCenter().Start()
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 2; i++ {
 		str, _ := pterm.DefaultBigText.WithLetters(
 			putils.LettersFromStringWithStyle("G", pterm.FgLightGreen.ToStyle()),
 			putils.LettersFromString("haf")).

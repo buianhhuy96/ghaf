@@ -13,12 +13,14 @@ func (m ScreensMethods) ExitScreenHeading() string {
 }
 
 func (m ScreensMethods) ExitScreen() {
+
 	// Create and print option list to exit installer
 	exit := []string{
 		previousScreenMsg,
 		"Reboot",
 		"Shutdown",
 		"Close installer",
+		"Unmount system and close installer",
 	}
 	selectedExitOption, _ := pterm.DefaultInteractiveSelect.
 		WithOptions(exit).
@@ -34,7 +36,11 @@ func (m ScreensMethods) ExitScreen() {
 		global.ExecCommand("sudo", "reboot")
 	} else if selectedExitOption == "Shutdown" {
 		global.ExecCommand("sudo", "poweroff")
+	} else if selectedExitOption == "Close installer" {
+		os.Exit(0)
 	} else {
+		// Unmount ghaf partition
+		umountGhaf()
 		os.Exit(0)
 	}
 

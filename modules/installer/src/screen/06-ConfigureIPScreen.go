@@ -19,8 +19,8 @@ func (m ScreensMethods) ConfigureIPScreenHeading() string {
 
 func (m ScreensMethods) ConfigureIPScreen() {
 
-	// If there is partition selected for install
-	if selectedPartition == "" {
+	if !(haveMountedSystem) {
+		pterm.Error.Printfln("No system has been mounted")
 		goToNextScreen()
 		return
 	}
@@ -49,7 +49,7 @@ func (m ScreensMethods) ConfigureIPScreen() {
 	// Write to IP config file
 	writeConnectionFile(sysIP)
 
-	time.Sleep(2)
+	time.Sleep(3)
 
 	pterm.Info.Printfln("Config for IP address has been copied to destination system")
 	goToNextScreen()
@@ -95,14 +95,14 @@ method=auto
 	}
 
 	f, err := os.Create(mountPoint + IPConfigFile)
-	defer func() {
-		f.Close()
-	}()
-
 	if err != nil {
 		panic(err)
 
 	}
+
+	defer func() {
+		f.Close()
+	}()
 
 	_, err = f.WriteString(content)
 	if err != nil {
