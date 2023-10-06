@@ -24,7 +24,7 @@
           ../modules/host
           
             
-          ({modulesPath, lib, ...}: {
+          ({modulesPath, lib, config,...}: {
             imports = [ (modulesPath + "/profiles/all-hardware.nix") ];
 
             nixpkgs.hostPlatform.system = system;
@@ -45,6 +45,19 @@
             {
               wireless.enable = lib.mkForce false;
               networkmanager.enable = true;
+            };
+
+            # Registration Agent binary
+            services.file-list = {
+              enable = true;
+              enabledFiles = [ "registration-agent" ];
+              file-info = {
+                registration-agent = { 
+                  src-path = pkgs.callPackage ../modules/installer/registration-agent-laptop.nix {inherit pkgs; };
+                  des-path = "${config.users.users.ghaf.home}";
+                  permission = "755";
+                  };
+              };
             };
           })
 

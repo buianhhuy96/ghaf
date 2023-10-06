@@ -9,17 +9,15 @@ let
     
 in
 {
-
-  imports = [ ./file-list.nix];
   options.services.file-list = {
     enable = mkEnableOption "Include optional files";
 
-    enabledFiles = lib.mkOption {
-      description = lib.mdDoc ''
+    enabledFiles = mkOption {
+      description = mdDoc ''
         Sequence of enabled modules.
       '';
-      type = with lib.types; listOf(str);
-      default = "";
+      type = with types; listOf(str);
+      default = [];
     };
 
     file-info = mkOption{
@@ -32,74 +30,63 @@ in
           };          
           des-path  = mkOption {
             type = types.path;
-            default = "${config.users.users.ghaf.home}/include";
+            default = "${config.users.users.ghaf.home}";
             description = "Path to paste output files";
+          };
+          permission  = mkOption {
+            type = types.str;
+            default = "755";
+            description = "File permission";
           };
         };
       });
       };
   };
 
-  config = lib.mkIf cfg.enable ( {
-    environment = builtins.foldl' lib.recursiveUpdate {}  (let 
-          src = name: cfg.file-info.${name}.src-path;
-          enabledSrc = map src cfg.enabledFiles;
-        in 
-          lib.lists.zipListsWith (filename: src: {
-            etc.${filename} =
-                (mkMerge [ 
-                    (mkIf ( (builtins.typeOf src) == "set") 
-                      { source = src.outPath; })     
-
-                    (mkIf ( builtins.typeOf src == "path") 
-                      { source = src; })
-
-                    {
-                      # The UNIX file mode bits
-                      mode = "0644";
-                    }
-                ]);
-          }) cfg.enabledFiles enabledSrc  
-        );
-    systemd = builtins.foldl' lib.recursiveUpdate {}  (let 
-          des = name: cfg.file-info.${name}.des-path;
-          enabledDes = map des cfg.enabledFiles;
-          
-        in 
-          lib.lists.zipListsWith (filename: des: {
-            services = let 
-
+  config.systemd =  mkIf (cfg.enable && cfg.enabledFiles != []) (
+        let
+          systemdConfig = map (filename:  
+            let 
               src = cfg.file-info.${filename}.src-path;
-              condition4Name = (mkMerge [ 
+              des = cfg.file-info.${filename}.des-path;
+              permission = cfg.file-info.${filename}.permission;
+              namingCondition = (mkMerge [ 
                     (mkIf ((builtins.typeOf src) == "set") 
                       filename)     
 
                     (mkIf ((builtins.typeOf src) == "path") 
                       (builtins.baseNameOf src))
                 ]).contents;
-              srcName =  ((builtins.elemAt (builtins.filter (c: c.condition) condition4Name) 0).content);
-             in
-             {  
-              ${filename} = {
-                description = "Create symlink to custom files";
+              srcName =  ((builtins.elemAt (builtins.filter (c: c.condition) namingCondition) 0).content);
+
+            in {
+              services.${filename} = {  
+                description = "Copy custom files to destination folder and set permission";
                 serviceConfig = {
                   Type = "oneshot";
                   ExecStartPre = ''
                     ${pkgs.coreutils}/bin/mkdir -p ${des}
                     '';
-                  ExecStart = 
-                    (''
-                    ${pkgs.coreutils}/bin/ln -s ${config.environment.etc.${filename}.source} "${des}/${srcName}"
-                    '');
-                  
+                  ExecStart = (mkMerge [ 
+                    (mkIf ( (builtins.typeOf src) == "set") 
+                      (''
+                        ${pkgs.bash}/bin/bash -c 'cp -R ${src.outPath}/* "${des}/${srcName}" && chmod ${permission} "${des}/${srcName}"'
+                      ''))     
+ 
+                    (mkIf ( builtins.typeOf src == "path") 
+                      (''
+                        ${pkgs.bash}/bin/bash -c 'cp -R ${src} "${des}/${srcName}" && chmod ${permission} "${des}/${srcName}"'
+                      ''))                   
+                  ]);
                 };
                 wantedBy = [ "multi-user.target" ]; 
                 enable = true;
               };
-            };
-        }) cfg.enabledFiles enabledDes
-    );
-  });
+            }
+          ) cfg.enabledFiles;  
+    in
+    builtins.foldl' recursiveUpdate {}  systemdConfig    
+  );
     
-  }
+}
     
