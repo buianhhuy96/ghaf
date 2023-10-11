@@ -72,6 +72,9 @@ in {
         # The solution is to add /etc/xdg one more time for weston service.
         # It does not affect on system-wide XDG_CONFIG_DIRS variable.
         Environment = "XDG_CONFIG_DIRS=$XDG_CONFIG_DIRS:/etc/xdg";
+
+        Restart = "always";
+        RestartSec = "5";
       };
       wantedBy = ["default.target"];
     };
@@ -122,6 +125,9 @@ in {
         # Log this user with utmp, letting it show up with commands 'w' and 'who'.
         UtmpIdentifier = "tty7";
         UtmpMode = "user";
+
+        Restart = "always";
+        RestartSec = "5";
       };
       wantedBy = ["multi-user.target"];
     };
