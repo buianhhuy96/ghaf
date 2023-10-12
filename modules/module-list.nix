@@ -17,6 +17,5 @@
   ./version
   ./virtualization/docker.nix
   ./windows-launcher
-  ./include-optional-files
   ./dci
 ]

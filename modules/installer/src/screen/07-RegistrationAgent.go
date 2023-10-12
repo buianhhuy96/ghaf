@@ -45,7 +45,11 @@ func (m ScreensMethods) RegistrationAgent() {
 	// Set environment variables
 	setEnv()
 	// Execute registration-agent-laptop binary
-	global.ExecCommandWithLiveMessage("sudo", registrationAgentScript)
+	global.ExecCommandWithLiveMessage(registrationAgentScript)
+	_, err := global.ExecCommand("sudo", "chmod", "-R", "777", certPath)
+	if err != 0 {
+		panic(err)
+	}
 	// Wait for 3 seconds for user to read the finish log
 	time.Sleep(3)
 	goToNextScreen()
@@ -64,7 +68,7 @@ func setEnv() {
 		os.Setenv(env, value)
 	}
 
-	writeEnv2File()
+	//writeEnv2File()
 }
 
 // InterfacesFromSysfs returns the wireless interfaces found in the SysFS (/sys/class/net)

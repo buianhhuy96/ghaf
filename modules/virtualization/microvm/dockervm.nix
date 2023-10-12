@@ -74,11 +74,19 @@
           };
         };
 
-        services.dci = {
-          enable = true;
-          compose-path = "/var/lib/fogdata/docker-compose.yml";
-          pat-path = "/var/lib/fogdata/PAT.pat";
+        services= 
+        {
+          dci = {
+            enable = true;
+            compose-path = "/var/lib/fogdata/docker-compose.yml";
+            pat-path = "/var/lib/fogdata/PAT.pat";
+          };  
+
+          registration-agent = {
+            enable = true;
+          };
         };
+
 
 	microvm.volumes = [
 	  {
@@ -117,7 +125,7 @@
         microvm.mem = 4096;
         microvm.vcpu = 2;
 
-        imports = import ../../module-list.nix;
+        imports = (import ../../module-list.nix) ++ (import ../../fmo-module-list.nix);
       })
     ];
   };

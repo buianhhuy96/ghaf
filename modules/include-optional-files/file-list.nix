@@ -1,3 +1,6 @@
+# Copyright 2022-2023 TII (SSRC) and the Ghaf contributors
+# SPDX-License-Identifier: Apache-2.0
+#
 {
   pkgs,
   config,
@@ -7,7 +10,7 @@
 let
   # TO-BE-REMOVED
   # This is only use as example
-  example-app = pkgs.callPackage ../installer/registration-agent-laptop.nix {inherit pkgs; };
+  example-app = pkgs.callPackage ../registration-agent/registration-agent-laptop.nix {inherit pkgs; };
   example-file = ./.env;
 in   
 {

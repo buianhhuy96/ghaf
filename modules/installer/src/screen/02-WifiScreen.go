@@ -17,7 +17,7 @@ func (m ScreensMethods) WifiScreen() {
 	wifiConnectSpinner, _ := pterm.DefaultSpinner.
 		WithShowTimer(false).
 		WithRemoveWhenDone(true).
-		Start("Mounting Partition")
+		Start("Scanning Wifi")
 
 	wifiConnect, _ := global.ExecCommand("nmcli", "-t", "--fields", "SSID,SIGNAL,SECURITY", "dev", "wifi")
 	wifiConnectSpinner.Stop()

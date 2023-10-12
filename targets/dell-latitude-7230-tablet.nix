@@ -43,6 +43,11 @@
           ../modules/virtualization/microvm/netvm.nix
           ../modules/virtualization/microvm/dockervm.nix
           {
+            services = {
+              registration-agent = {
+                enable = true;
+              };
+            };
             ghaf = {
               hardware.x86_64.common.enable = true;
 
@@ -90,6 +95,7 @@
             ];
           }
         ]
+        ++ (import ../modules/fmo-module-list.nix)
         ++ (import ../modules/module-list.nix)
         ++ extraModules;
     };

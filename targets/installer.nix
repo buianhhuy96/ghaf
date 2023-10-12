@@ -32,6 +32,10 @@
 
             hardware.enableAllFirmware = true;
 
+            services.registration-agent = {
+              enable = true;
+            };
+
             ghaf = {
               profiles.installer.enable = true;
               #profiles.applications.enable = true;
@@ -47,18 +51,7 @@
               networkmanager.enable = true;
             };
 
-            # Registration Agent binary
-            services.file-list = {
-              enable = true;
-              enabledFiles = [ "registration-agent" ];
-              file-info = {
-                registration-agent = { 
-                  src-path = pkgs.callPackage ../modules/installer/registration-agent-laptop.nix {inherit pkgs; };
-                  des-path = "${config.users.users.ghaf.home}";
-                  permission = "755";
-                  };
-              };
-            };
+           
           })
 
           {
@@ -74,6 +67,7 @@
             isoImage.squashfsCompression = "lz4"; 
           }
         ]
+        ++ (import ../modules/fmo-module-list.nix)
         ++ (import ../modules/module-list.nix) ;
     };
   in {

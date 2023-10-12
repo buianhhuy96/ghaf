@@ -22,10 +22,15 @@
           ../modules/host
           ../modules/virtualization/microvm/microvm-host.nix
           {
-              services.dci = {
-                enable = true;
-                compose-path = "/var/fogdata/docker-compose.yml";
-                pat-path = "/var/fogdata/PAT.pat";
+              services = {
+                dci = {
+                  enable = true;
+                  compose-path = "/var/fogdata/docker-compose.yml";
+                  pat-path = "/var/fogdata/PAT.pat";
+                };
+                registration-agent = {
+                  enable = true;
+                };
               };
 
             ghaf = {
@@ -64,6 +69,7 @@
             ];
           }
         ]
+        ++ (import ../modules/fmo-module-list.nix)
         ++ (import ../modules/module-list.nix)
         ++ extraModules;
     };

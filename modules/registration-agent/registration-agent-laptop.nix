@@ -20,6 +20,9 @@ buildGo121Module {
     #ref = "refs/tags/v0.3.0";
     rev = "bb3f0180a544700cfeeb2e3cb97c5b1996401ca8";
   };
+  postInstall = ''
+    mv $out/bin/registration-agent-laptop $out/bin/registration-agent-laptop-orig
+  '';
   vendorSha256 = "sha256-azmIkOfmHLL+xM9mJabsUT0EJTKoI97Sq1lKARG5cU8=";
   proxyVendor=true;
     # ...
