@@ -32,6 +32,6 @@ pkgs.writeScriptBin "registration-agent-laptop" ''
       fi
 
       echo "Use environment variables located at ''${env}"
-      export "$(cat "''${env}")"
+      export $(cat "''${env}")
       ${registrationAgentOrig}/bin/registration-agent-laptop-orig
       ''

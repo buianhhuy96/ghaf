@@ -15,8 +15,8 @@ var registrationAgentScript = "./script/registration-agent-laptop"
 var envFile = "/home/ghaf/.env"
 
 // Environment variables required for registration-agent-laptop
-var certPath = mountPoint + "/home/ghaf/certs"
-var configPath = mountPoint + "/home/ghaf/config"
+var certPath = mountPoint + "/var/fogdata/certs"
+var configPath = mountPoint + "/var/fogdata/config"
 var wirelessDevice = interfacesFromSysfs()
 var registrationEnv = map[string]string{
 	"REGISTRATION_AGENT_PROVISIONING_URL":                "http://localhost:80/api/devices/provision",

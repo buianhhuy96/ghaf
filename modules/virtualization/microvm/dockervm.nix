@@ -84,6 +84,8 @@
 
           registration-agent = {
             enable = true;
+            certs-path = "/var/lib/fogdata/certs";
+            config-path = "/var/lib/fogdata/config";
           };
         };
 

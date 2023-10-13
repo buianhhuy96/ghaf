@@ -14,7 +14,7 @@ let
     
     registrationAgent = pkgs.callPackage ./registration-agent-laptop-with-env.nix  {
        inherit pkgs; 
-       env-path = lib.strings.removeSuffix (builtins.baseNameOf cfg.certs-path) cfg.certs-path;
+       env-path = env-path;
      };
 in
   with lib; {
@@ -23,13 +23,13 @@ in
 
       certs-path = mkOption {
         type = types.path;
-        default = "${config.users.users.ghaf.home}/certs";
+        default = "/var/fogdata/certs";
         description = "Path to certificate files";
       };
 
       config-path = mkOption {
         type = types.path;
-        default = "${config.users.users.ghaf.home}/config";
+        default = "/var/fogdata/config";
         description = "Path to config files";
       };
     };
