@@ -31,6 +31,7 @@
                 registration-agent = {
                   enable = true;
                 };
+                avahi.nssmdns = true;
               };
 
             ghaf = {
