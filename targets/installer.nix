@@ -32,6 +32,7 @@
 
             hardware.enableAllFirmware = true;
 
+            services.avahi.nssmdns = true;
             services.registration-agent = {
               enable = true;
             };
