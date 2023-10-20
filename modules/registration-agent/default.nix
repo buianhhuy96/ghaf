@@ -40,7 +40,9 @@ in
           description = "Create environment-variable file for registration-agent-laptop";
           serviceConfig = {
             Type = "idle";
-            ExecStartPre = ''${pkgs.bash}/bin/bash -c 'cat <<< "REGISTRATION_AGENT_PROVISIONING_URL=http://localhost:80/api/devices/provision\
+            ExecStartPre = ''${pkgs.bash}/bin/bash -c '\
+              ${pkgs.coreutils}/bin/mkdir -p -m777 ${cfg.certs-path} &&\
+              cat <<< "REGISTRATION_AGENT_PROVISIONING_URL=http://localhost:80/api/devices/provision\
 \nREGISTRATION_AGENT_DEVICE_REGISTERED_PATH=${cfg.certs-path}/registered.json\
 \nREGISTRATION_AGENT_SERVICE_KEY_PATH=${cfg.certs-path}/client.key\
 \nREGISTRATION_AGENT_SERVICE_CLIENT_CERTIFICATE_PATH=${cfg.certs-path}/client.pem\
@@ -50,7 +52,6 @@ in
 \nREGISTRATION_AGENT_NETWORK_INTERFACE=$(${pkgs.coreutils}/bin/ls -A /sys/class/ieee80211/*/device/net/ 2>/dev/null)\
 \nREGISTRATION_AGENT_DEVICE_CONFIG_PATH=${cfg.config-path}"> ${env-path}/.env' '';
             ExecStart = ''${pkgs.bash}/bin/bash -c '\
-              ${pkgs.coreutils}/bin/mkdir -p -m777 ${cfg.certs-path} &&\
               ${pkgs.coreutils}/bin/chmod 777 ${env-path}/.env' '';
           };
           wantedBy = [ "multi-user.target" ]; 
