@@ -80,7 +80,12 @@
             enable = true;
             compose-path = "/var/lib/fogdata/docker-compose.yml";
             pat-path = "/var/lib/fogdata/PAT.pat";
-          };  
+          };
+
+          hostname-service = {
+            enable = true;
+            hostname-path = "/var/lib/fogdata/hostname";
+          };
 
           registration-agent = {
             enable = true;

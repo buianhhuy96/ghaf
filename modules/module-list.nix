@@ -18,4 +18,5 @@
   ./virtualization/docker.nix
   ./windows-launcher
   ./dci
+  ./hostname-service
 ]

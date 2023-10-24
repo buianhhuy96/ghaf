@@ -25,7 +25,7 @@ in {
 
     virtualisation.docker.enable = true;
 
-    systemd.services.my-dci = {
+    systemd.services.fmo-dci = {
     script = ''
         USR=$(${pkgs.gawk}/bin/gawk '{print $1}' ${cfg.pat-path})
         PAT=$(${pkgs.gawk}/bin/gawk '{print $2}' ${cfg.pat-path})
