@@ -41,7 +41,6 @@ in {
         # TODO: open only used port
         ${pkgs.iptables}/bin/iptables -I INPUT -p tcp --dport ${cfg.sport} -j ACCEPT
         ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p tcp -d $IP --dport ${cfg.sport} -j DNAT --to-destination ${cfg.dip}:${cfg.dport}
-        ${pkgs.iptables}/bin/iptables -t nat -I POSTROUTING -p tcp -d ${cfg.dip} --dport ${cfg.dport} -j SNAT --to-source $IP:${cfg.sport}
       '';
 
       wantedBy = ["network.target"];
