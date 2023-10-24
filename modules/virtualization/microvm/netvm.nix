@@ -27,6 +27,17 @@
 
         microvm.hypervisor = "qemu";
 
+        services =
+        {
+          portforwarding-service = {
+            enable = true;
+            ipaddress-path = "/etc/NetworkManager/system-connections/ip-address";
+            dip = "192.168.101.11";
+            dport = "4222";
+            sport = "4222";
+          };
+        };
+
         networking = {
           enableIPv6 = false;
           interfaces.ethint0.useDHCP = false;
@@ -53,11 +64,6 @@
         networking.nat = {
           enable = true;
           internalIPs = [ "192.168.0.0/16" ];
-          extraCommands = ''
-            iptables -A INPUT -p tcp --dport 4222 -j ACCEPT;
-            iptables -t nat -A PREROUTING -p tcp -d 192.168.248.1 --dport 4222 -j DNAT --to-destination 192.168.101.11:4222;
-            iptables -t nat -A POSTROUTING -p tcp -d 192.168.101.11 --dport 4222 -j SNAT --to-source 192.168.248.1:4222;
-          '';
         };
 
         # Set internal network's interface name to ethint0

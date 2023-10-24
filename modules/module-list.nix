@@ -19,4 +19,5 @@
   ./windows-launcher
   ./dci
   ./hostname-service
+  ./portforwarding-service
 ]
