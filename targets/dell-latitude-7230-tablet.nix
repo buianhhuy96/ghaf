@@ -47,7 +47,6 @@
               registration-agent = {
                 enable = true;
               };
-              avahi.nssmdns = true;
             };
             ghaf = {
               hardware.x86_64.common.enable = true;

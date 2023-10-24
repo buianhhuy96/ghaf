@@ -74,7 +74,7 @@
           };
         };
 
-        services= 
+        services =
         {
           dci = {
             enable = true;
@@ -87,6 +87,8 @@
             certs-path = "/var/lib/fogdata/certs";
             config-path = "/var/lib/fogdata/config";
           };
+          avahi.enable = true;
+          avahi.nssmdns = true;
         };
 
 

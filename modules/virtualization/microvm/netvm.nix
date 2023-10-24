@@ -53,10 +53,9 @@
         networking.nat = {
           enable = true;
           internalIPs = [ "192.168.0.0/16" ];
-#          externalInterface = "enp0s10f0";
           extraCommands = ''
             iptables -A INPUT -p tcp --dport 4222 -j ACCEPT;
-            iptables -t nat -A PREROUTING -p tcp --dport 4222 -j DNAT --to-destination 192.168.101.11:4222;
+            iptables -t nat -A PREROUTING -p tcp -d 192.168.248.1 --dport 4222 -j DNAT --to-destination 192.168.101.11:4222;
             iptables -t nat -A POSTROUTING -p tcp -d 192.168.101.11 --dport 4222 -j SNAT --to-source 192.168.248.1:4222;
           '';
         };
