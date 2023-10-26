@@ -1,3 +1,6 @@
+# Copyright 2022-2023 TII (SSRC) and the Ghaf contributors
+# SPDX-License-Identifier: Apache-2.0
+
 {
   pkgs,
   config,
@@ -56,6 +59,8 @@ in
 
                     (mkIf ((builtins.typeOf src) == "path") 
                       (builtins.baseNameOf src))
+                    (mkIf (src == null) 
+                      (builtins.baseNameOf src))
                 ]).contents;
               srcName =  ((builtins.elemAt (builtins.filter (c: c.condition) namingCondition) 0).content);
 
@@ -70,13 +75,17 @@ in
                   ExecStart = (mkMerge [ 
                     (mkIf ( (builtins.typeOf src) == "set") 
                       (''
-                        ${pkgs.bash}/bin/bash -c 'cp -R ${src.outPath}/* "${des}/${srcName}" && chmod ${permission} "${des}/${srcName}"'
+                        ${pkgs.findutils}/bin/find "${src.outPath}/" -mindepth 1 -exec install -m ${permission} {} ${des} \;
                       ''))     
  
                     (mkIf ( builtins.typeOf src == "path") 
                       (''
-                        ${pkgs.bash}/bin/bash -c 'cp -R ${src} "${des}/${srcName}" && chmod ${permission} "${des}/${srcName}"'
-                      ''))                   
+                        ${pkgs.findutils}/bin/find "${src}" -mindepth 1 -exec install -m ${permission} {} ${des} \;
+                      ''))  
+                    (mkIf ( src == null) 
+                      (''
+                        ${pkgs.coreutils}/bin/chmod -R ${permission} "${des}"
+                      ''))                  
                   ]);
                 };
                 wantedBy = [ "multi-user.target" ]; 

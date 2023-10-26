@@ -4,5 +4,6 @@
 #
 [
   ./include-optional-files
+  ./installer
   ./registration-agent
 ]

@@ -46,6 +46,7 @@
             services = {
               registration-agent = {
                 enable = true;
+                env-path= "/home/ghaf";
               };
             };
 

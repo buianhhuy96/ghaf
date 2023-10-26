@@ -9,12 +9,10 @@
   lib,
 }: let
   formatModule = nixos-generators.nixosModules.iso;
-  installer = {name, systemImgCfg}: let
+  installer = {name}: let
     system = "x86_64-linux";
 
     pkgs = import nixpkgs {inherit system;};
-
-    installerScript = pkgs.callPackage ../modules/installer  { inherit pkgs; systemImgCfg = systemImgCfg;  };
 
     installerImgCfg = lib.nixosSystem {
       inherit system;
@@ -34,15 +32,11 @@
 
             services.avahi.enable = true;
             services.avahi.nssmdns = true;
-            services.registration-agent = {
-              enable = true;
-            };
 
             ghaf = {
               profiles.installer.enable = true;
               #profiles.applications.enable = true;
             };
-            environment.systemPackages = [installerScript];
             environment.noXlibs = false;
             # For WLAN firmwares
             hardware.enableRedistributableFirmware = true;
@@ -55,13 +49,17 @@
 
            
           })
-
           {
-            # TODO
-            environment.loginShellInit = 
-                ''
-                sudo ${installerScript}/bin/ghaf-installer
-                '';
+            installer.installerScript = {
+              enable = true;
+              runOnBoot = true;
+              # TODO: here we need to choose debug/rel version according to variant
+              systems = [
+                { name  = "dell-latitude-7330-laptop-debug"; image = self.nixosConfigurations.dell-latitude-7330-laptop-debug; }
+                { name  = "dell-latitude-7230-tablet-debug"; image = self.nixosConfigurations.dell-latitude-7230-tablet-debug; }
+                { name  = "dell-latitude-dev-debug"; image = self.nixosConfigurations.dell-latitude-dev-debug; }
+                ];
+            };
           }
 
           formatModule
@@ -77,11 +75,7 @@
     inherit installerImgCfg system;
     installerImgDrv = installerImgCfg.config.system.build.${installerImgCfg.config.formatAttr};
   };
-  targets = map installer [{name = "general"; 
-                            # TODO: here we need to choose debug/rel version according to variant
-                            systemImgCfg = [ self.nixosConfigurations.dell-latitude-7330-laptop-debug
-                                             self.nixosConfigurations.dell-latitude-7230-tablet-debug
-                                             self.nixosConfigurations.dell-latitude-dev-debug ] ;}];
+  targets = map installer [{name = "general"; }];
 in {
   packages = lib.foldr lib.recursiveUpdate {} (map ({name, system, installerImgDrv, ...}: {
     ${system}.${name} = installerImgDrv;

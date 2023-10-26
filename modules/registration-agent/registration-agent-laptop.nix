@@ -1,7 +1,7 @@
 # Copyright 2022-2023 TII (SSRC) and the Ghaf contributors
 # SPDX-License-Identifier: Apache-2.0
 
-{pkgs}:
+{pkgs,lib}:
 let 
   buildGo121Module = pkgs.darwin.apple_sdk_11_0.callPackage ../golang/module.nix {
     go = go_1_21;
@@ -17,7 +17,6 @@ buildGo121Module {
   src = builtins.fetchGit {
     url = "git@github.com:tiiuae/registration-agent-laptop.git";
     # Testing with tags name but failed at pure evaluation
-    #ref = "refs/tags/v0.3.0";
     rev = "bb3f0180a544700cfeeb2e3cb97c5b1996401ca8";
   };
   postInstall = ''

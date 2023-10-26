@@ -89,8 +89,14 @@
 
           registration-agent = {
             enable = true;
+            runOnBoot = true;
+            # env-path is the location of .env
+            # while the other path is for the environment variables defined in .env
             certs-path = "/var/lib/fogdata/certs";
-            config-path = "/var/lib/fogdata/config";
+            config-path = "/var/lib/fogdata";
+            token-path = "/var/lib/fogdata/certs";
+            hostname-path = "/var/lib/fogdata";
+            env-path = "/home/ghaf";
           };
           avahi.enable = true;
           avahi.nssmdns = true;
