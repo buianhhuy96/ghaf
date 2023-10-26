@@ -69,6 +69,12 @@
                 enable = true;
               };
             };
+
+            services.udev.extraRules = ''
+              # Add usb to kvm group
+              SUBSYSTEM=="usb", ATTR{idVendor}=="0525", ATTR{idProduct}=="a4a2", GROUP+="kvm"
+            '';
+
             ghaf = {
               hardware.x86_64.common.enable = true;
 

@@ -27,6 +27,12 @@
 
         microvm.hypervisor = "qemu";
 
+        microvm.qemu.extraArgs = [
+          "-usb"
+          "-device"
+          "usb-host,vendorid=0x0525,productid=0xa4a2"
+        ];
+
         services =
         {
           portforwarding-service = {
