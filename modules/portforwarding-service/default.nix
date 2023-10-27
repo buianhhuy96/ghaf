@@ -41,6 +41,12 @@ in {
         # TODO: open only used port
         ${pkgs.iptables}/bin/iptables -I INPUT -p tcp --dport ${cfg.sport} -j ACCEPT
         ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p tcp -d $IP --dport ${cfg.sport} -j DNAT --to-destination ${cfg.dip}:${cfg.dport}
+
+
+        # open mdns port
+        # TODO: WAR remove it and do in proper way
+        ${pkgs.iptables}/bin/iptables -I INPUT -p udp --dport 5353 -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p udp -d $IP --dport 5353 -j DNAT --to-destination ${cfg.dip}:5353
       '';
 
       wantedBy = ["network.target"];
