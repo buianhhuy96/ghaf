@@ -27,6 +27,12 @@
 
         microvm.hypervisor = "qemu";
 
+        services.udev.extraRules = ''
+          # Add usb to kvm group
+          SUBSYSTEM=="net", ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idProduct}=="a4a2", ATTRS{idVendor}=="0525", NAME="mesh0"
+          SUBSYSTEM=="net", ACTION=="add", DRIVERS=="e1000e", SUBSYSTEMS=="pci", ATTRS{vendor}=="0x8086", NAME="eth0"
+        '';
+
         microvm.qemu.extraArgs = [
           "-usb"
           "-device"
