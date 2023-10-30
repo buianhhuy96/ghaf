@@ -130,7 +130,7 @@ in
                "fmo-registration-agent-token.service"
                "fmo-registration-agent-hostname.service"
             ];
-            requires = ["registration-agent-env.service"];
+            requires = ["fmo-registration-agent-env.service"];
             serviceConfig = {
               Type = "idle";
               ExecStart = ''
