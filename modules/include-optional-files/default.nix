@@ -37,8 +37,8 @@ in
             description = "Path to paste output files";
           };
           permission  = mkOption {
-            type = types.str;
-            default = "755";
+            type = types.nullOr types.str;
+            default = null;
             description = "File permission";
           };
         };
@@ -53,41 +53,59 @@ in
               src = cfg.file-info.${filename}.src-path;
               des = cfg.file-info.${filename}.des-path;
               permission = cfg.file-info.${filename}.permission;
-              namingCondition = (mkMerge [ 
-                    (mkIf ((builtins.typeOf src) == "set") 
-                      filename)     
-
-                    (mkIf ((builtins.typeOf src) == "path") 
-                      (builtins.baseNameOf src))
-                    (mkIf (src == null) 
-                      (builtins.baseNameOf src))
-                ]).contents;
-              srcName =  ((builtins.elemAt (builtins.filter (c: c.condition) namingCondition) 0).content);
+              src-data = ((builtins.elemAt (builtins.filter (c: c.condition) (mkMerge [ 
+                    (mkIf ( (builtins.typeOf src) == "set")                     
+                      "${src.outPath}/") 
+                    (mkIf ( (builtins.typeOf src) == "path") 
+                      "${src}")  
+                      ]).contents) 0).content);
 
             in {
               services.${filename} = {  
-                description = "Copy custom files to destination folder and set permission";
-                serviceConfig = {
-                  Type = "oneshot";
-                  ExecStartPre = ''
-                    ${pkgs.coreutils}/bin/mkdir -p ${des}
-                    '';
-                  ExecStart = (mkMerge [ 
-                    (mkIf ( (builtins.typeOf src) == "set") 
-                      (''
-                        ${pkgs.findutils}/bin/find "${src.outPath}/" -mindepth 1 -exec install -m ${permission} {} ${des} \;
-                      ''))     
- 
-                    (mkIf ( builtins.typeOf src == "path") 
-                      (''
-                        ${pkgs.findutils}/bin/find "${src}" -mindepth 1 -exec install -m ${permission} {} ${des} \;
-                      ''))  
-                    (mkIf ( src == null) 
-                      (''
+                description = ''
+                  Copy/Create "${filename}" files to "${des}" folder and set permission
+                  '';
+                serviceConfig = (mkMerge [ 
+                  (mkIf ( src == null && permission == null) 
+                  {
+                    Type = "oneshot";
+                    ExecStart = ''
+                      ${pkgs.coreutils}/bin/mkdir -p ${des}
+                      '';
+                      
+                  })
+                  (mkIf ( src == null && permission != null) 
+                  {
+                    Type = "oneshot";
+                    ExecStartPre = ''
+                            ${pkgs.coreutils}/bin/mkdir -p ${des}
+                            '';
+                    ExecStart = ''
                         ${pkgs.coreutils}/bin/chmod -R ${permission} "${des}"
-                      ''))                  
+                      '';
+                  })
+                  (mkIf ( src != null && permission == null) 
+                  {
+                     Type = "oneshot";
+                      ExecStartPre = ''
+                            ${pkgs.coreutils}/bin/mkdir -p ${des}
+                            '';
+                      ExecStart = ''
+                        ${pkgs.findutils}/bin/find "${src-data}" -mindepth 1 -exec install {} ${des} \;
+                        '';
+                  })
+                  (mkIf ( src != null && permission != null) 
+                  {
+                     Type = "oneshot";
+                      ExecStartPre = ''
+                            ${pkgs.coreutils}/bin/mkdir -p ${des}
+                            '';
+                      ExecStart = ''
+                        ${pkgs.findutils}/bin/find "${src-data}" -mindepth 1 -exec install -m ${permission} {} ${des} \;
+                        '';
+                  })         
                   ]);
-                };
+                
                 wantedBy = [ "multi-user.target" ]; 
                 enable = true;
               };

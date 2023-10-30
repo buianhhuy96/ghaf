@@ -34,7 +34,7 @@ func (m ScreensMethods) RegistrationAgent() {
 	global.ExecCommandWithLiveMessage("bash", registrationAgentScript)
 
 	// Set permission of the certificates
-	setPermission()
+	//setPermission()
 
 	// Wait for 3 seconds for user to read the finish log
 	time.Sleep(3)
