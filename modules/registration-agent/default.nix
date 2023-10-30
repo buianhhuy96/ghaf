@@ -124,11 +124,11 @@ in
           services.fmo-registration-agent-network-interface = {  
             description = "Get network interface for registration-agent-laptop environment-variable";
             after = [
-               "registration-agent-env.service" 
-               "registration-agent-certs.service"
-               "registration-agent-config.service"
-               "registration-agent-token.service"
-               "registration-agent-hostname.service"
+               "fmo-registration-agent-env.service" 
+               "fmo-registration-agent-certs.service"
+               "fmo-registration-agent-config.service"
+               "fmo-registration-agent-token.service"
+               "fmo-registration-agent-hostname.service"
             ];
             requires = ["registration-agent-env.service"];
             serviceConfig = {
@@ -145,7 +145,7 @@ in
           services.fmo-registration-agent-execution = mkIf (cfg.runOnBoot) { 
             description = "Execute registration agent on boot for registration phase";
             after = [
-               "registration-agent-network-interface.service"
+               "fmo-registration-agent-network-interface.service"
                "network-online.target"
             ];
             requires = [ "network-online.target" ];
