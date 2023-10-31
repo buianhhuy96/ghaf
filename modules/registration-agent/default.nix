@@ -80,7 +80,7 @@ in
                 PROVISIONING_URL=
                 DEVICE_ALIAS=
                 DEVICE_IDENTITY_FILE=${cfg.certs-path}/identity.txt
-                DEVICE_CONFIGURATION_FILE=${cfg.config-path}/docker_compose.yml
+                DEVICE_CONFIGURATION_FILE=${cfg.config-path}/docker-compose.yml
                 DEVICE_AUTH_TOKEN_FILE=${cfg.token-path}/PAT.pat
                 DEVICE_HOSTNAME_FILE=${cfg.hostname-path}/hostname
                 DEVICE_ID_FILE=${cfg.certs-path}/device_id.txt
