@@ -44,7 +44,7 @@ in
     enable = true;
     certs-path = "/home/ghaf/root/var/fogdata/certs";
     config-path = "/home/ghaf/root/var/fogdata";
-    token-path = "/home/ghaf/root/var/fogdata/certs";
+    token-path = "/home/ghaf/root/var/fogdata";
     hostname-path = "/home/ghaf/root/var/fogdata";
     env-path = "/var/fogdata";
   };
