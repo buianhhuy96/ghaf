@@ -17,8 +17,8 @@ buildGo121Module {
   src = builtins.fetchGit {
     url = "git@github.com:tiiuae/registration-agent-laptop.git";
     # Testing with tags name but failed at pure evaluation
-    rev = "86509685e0af933d2f010636b146b5cf0723136e";
-    ref = "refs/heads/parse-pkcs1";
+    rev = "cd2214f6ff7a1596df3ad9778edc806b2c51f3c8";
+    ref = "refs/heads/main";
   };
   tags = [ "prod" ];
   patches = [./remove-test.patch];
