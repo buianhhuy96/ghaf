@@ -47,6 +47,12 @@ in
         description = "Path to hostname file, used for environment variables";
       };
 
+      ip-path = mkOption {
+        type = types.path;
+        default = "/var/fogdata";
+        description = "Path to ip file, used for environment variables";
+      };
+
       env-path = mkOption {
         type = types.path;
         default = "/var/fogdata";
@@ -93,6 +99,7 @@ in
                 SERVICE_FLEET_LEAF_CA_FILE=${cfg.certs-path}/fleet_ca.crt
                 SERVICE_SWARM_KEY_FILE=${cfg.certs-path}/swarm.key
                 SERVICE_SWARM_CA_FILE=${cfg.certs-path}/swarm.crt
+                IP_ADDRESS_FILE=${cfg.ip-path}/ip-address
               '';
               des-path = cfg.env-path;
               permission = "666";
