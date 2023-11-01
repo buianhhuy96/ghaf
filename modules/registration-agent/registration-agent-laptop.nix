@@ -22,7 +22,7 @@ buildGo121Module {
   };
   tags = [ "prod" ];
   patches = [./remove-test.patch];
-  vendorSha256 = "sha256-qzWWldUSW6yQfPERBqGSKlR5WULO235X/Co0j5/aoUo=";
+  vendorSha256 = "sha256-fg7af7xLvn4kVlg24i14nGLAGBLuSfr6ttKmI6Guz3U=";
   proxyVendor=true;
 
 
