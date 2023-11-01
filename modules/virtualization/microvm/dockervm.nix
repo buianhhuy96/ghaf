@@ -54,6 +54,7 @@
         systemd.network.links."10-ethint0" = {
           matchConfig.PermanentMACAddress = "02:00:00:01:01:02";
           linkConfig.Name = "ethint0";
+          extraConfig = "MTUBytes=1460";
         };
 
         systemd.network = {
