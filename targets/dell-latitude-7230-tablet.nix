@@ -5,6 +5,7 @@
 {
   self,
   lib,
+  ghafOS,
   nixos-generators,
   nixos-hardware,
   microvm,

@@ -113,7 +113,7 @@
             fsType = "ext4";
 	  }
 	];
-
+  microvm.optimize.enable = true;
 	microvm.shares = [
           {
 	    # On the host
@@ -136,7 +136,7 @@
 	  }
         ];
 
-        microvm.qemu.bios.enable = false;
+        #microvm.qemu.bios.enable = false;
         microvm.storeDiskType = "squashfs";
         microvm.mem = 4096;
         microvm.vcpu = 2;

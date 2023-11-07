@@ -103,6 +103,7 @@
           };
         };
 
+  microvm.optimize.enable = true;
 	microvm.shares = [
           {
 	    # On the host
@@ -115,7 +116,7 @@
 	  }
         ];
 
-        microvm.qemu.bios.enable = false;
+        #microvm.qemu.bios.enable = false;
         microvm.storeDiskType = "squashfs";
 
         imports = import ../../module-list.nix;

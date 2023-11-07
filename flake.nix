@@ -14,34 +14,40 @@
     ];
   };
 
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
-    flake-utils.url = "github:numtide/flake-utils";
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nixos-hardware.url = "github:nixos/nixos-hardware";
-    microvm = {
-      url = "github:astro/microvm.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-    jetpack-nixos = {
-      url = "github:anduril/jetpack-nixos";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+  inputs = rec {
+    ghafOS.url = "github:tiiuae/ghaf";
+    #nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+    #flake-utils.url = "github:numtide/flake-utils";
+    #nixos-generators = {
+    #  url = "github:nix-community/nixos-generators";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #};
+    #nixos-hardware.url = "github:nixos/nixos-hardware";
+    #microvm = ghafOS.inputs.microvm;
+    #{
+    #  url = "github:astro/microvm.nix";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #  inputs.flake-utils.follows = "flake-utils";
+    #};
+    #jetpack-nixos = {
+    #  url = "github:anduril/jetpack-nixos";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #};
   };
 
   outputs = {
     self,
-    nixpkgs,
-    flake-utils,
-    nixos-generators,
-    nixos-hardware,
-    microvm,
-    jetpack-nixos,
+    ghafOS,
+    #nixpkgs,
   }: let
+    # Retrieve inputs from Ghaf
+    nixpkgs = ghafOS.inputs.nixpkgs;
+    flake-utils = ghafOS.inputs.flake-utils;
+    nixos-generators = ghafOS.inputs.nixos-generators;
+    nixos-hardware = ghafOS.inputs.nixos-hardware;
+    microvm = ghafOS.inputs.microvm;
+    jetpack-nixos = ghafOS.inputs.jetpack-nixos;
+
     systems = with flake-utils.lib.system; [
       x86_64-linux
       aarch64-linux
@@ -84,7 +90,7 @@
       }
 
       # Target configurations
-      (import ./targets {inherit self lib nixpkgs nixos-generators nixos-hardware microvm jetpack-nixos;})
+      (import ./targets {inherit self lib ghafOS nixpkgs nixos-generators nixos-hardware microvm jetpack-nixos;})
 
       # User apps
       (import ./user-apps {inherit lib nixpkgs flake-utils;})

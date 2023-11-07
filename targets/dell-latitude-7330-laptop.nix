@@ -5,6 +5,7 @@
 {
   self,
   lib,
+  ghafOS,
   nixos-generators,
   nixos-hardware,
   microvm,
@@ -55,12 +56,12 @@
     ];
     hostConfiguration = lib.nixosSystem {
       inherit system;
-      specialArgs = {inherit lib;};
+      specialArgs = {inherit lib; inherit ghafOS;};
       modules =
         [
           microvm.nixosModules.host
-          ../modules/host
-          ../modules/virtualization/microvm/microvm-host.nix
+          (ghafOS + /modules/host)
+          (ghafOS + /modules/virtualization/microvm/microvm-host.nix)
           ../modules/virtualization/microvm/netvm.nix
           ../modules/virtualization/microvm/dockervm.nix
           {
