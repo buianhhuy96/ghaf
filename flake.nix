@@ -16,29 +16,11 @@
 
   inputs = rec {
     ghafOS.url = "github:tiiuae/ghaf";
-    #nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
-    #flake-utils.url = "github:numtide/flake-utils";
-    #nixos-generators = {
-    #  url = "github:nix-community/nixos-generators";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
-    #nixos-hardware.url = "github:nixos/nixos-hardware";
-    #microvm = ghafOS.inputs.microvm;
-    #{
-    #  url = "github:astro/microvm.nix";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #  inputs.flake-utils.follows = "flake-utils";
-    #};
-    #jetpack-nixos = {
-    #  url = "github:anduril/jetpack-nixos";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
   };
 
   outputs = {
     self,
     ghafOS,
-    #nixpkgs,
   }: let
     # Retrieve inputs from Ghaf
     nixpkgs = ghafOS.inputs.nixpkgs;

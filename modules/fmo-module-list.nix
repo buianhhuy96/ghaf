@@ -3,7 +3,10 @@
 #
 #
 [
+  ./dci
+  ./hostname-service
   ./include-optional-files
   ./installer
   ./registration-agent
+  ./portforwarding-service
 ]

@@ -1,6 +1,6 @@
 # Copyright 2022-2023 TII (SSRC) and the Ghaf contributors
 # SPDX-License-Identifier: Apache-2.0
-{
+{ghafOS}:{
   config,
   lib,
   ...
@@ -40,7 +40,7 @@
         microvm.interfaces = [
           {
             type = "tap";
-            id = "vm-dockervm";
+            id = "tap-dockervm";
             mac = "02:00:00:01:01:02";
           }
         ];
@@ -104,36 +104,35 @@
         };
 
 
-	microvm.volumes = [
-	  {
+	      microvm.volumes = [
+	        {
             image = "/var/tmp/docker.img";
             mountPoint = "/var/lib/docker";
             size = 10240;
             autoCreate = true;
             fsType = "ext4";
-	  }
-	];
-  microvm.optimize.enable = true;
-	microvm.shares = [
+	        }
+	      ];
+        microvm.optimize.enable = true;
+	      microvm.shares = [
           {
-	    # On the host
-	    source = "/var/foghyper";
-	    # In the MicroVM
-	    mountPoint = "/var/lib/foghyper/fog_system/conf";
-	    tag = "foghyperfs";
-	    proto = "virtiofs";
-	    socket = "foghyperfs.sock";
-	  }
-
-	  {
-	    # On the host
-	    source = "/var/fogdata";
-	    # In the MicroVM
-	    mountPoint = "/var/lib/fogdata";
-	    tag = "fogdatafs";
-	    proto = "virtiofs";
-	    socket = "fogdata.sock";
-	  }
+	          # On the host
+	          source = "/var/foghyper";
+	          # In the MicroVM
+	          mountPoint = "/var/lib/foghyper/fog_system/conf";
+	          tag = "foghyperfs";
+	          proto = "virtiofs";
+	          socket = "foghyperfs.sock";
+	        }
+	        {
+	          # On the host
+	          source = "/var/fogdata";
+	          # In the MicroVM
+	          mountPoint = "/var/lib/fogdata";
+	          tag = "fogdatafs";
+	          proto = "virtiofs";
+	          socket = "fogdata.sock";
+	        }
         ];
 
         #microvm.qemu.bios.enable = false;
@@ -141,7 +140,7 @@
         microvm.mem = 4096;
         microvm.vcpu = 2;
 
-        imports = (import ../../module-list.nix) ++ (import ../../fmo-module-list.nix);
+        imports = (import "${ghafOS}/modules/module-list.nix") ++ (import ../../fmo-module-list.nix);
       })
     ];
   };

@@ -17,7 +17,4 @@
   ./version
   ./virtualization/docker.nix
   ./windows-launcher
-  ./dci
-  ./hostname-service
-  ./portforwarding-service
 ]
