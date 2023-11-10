@@ -6,8 +6,11 @@
   ...
 }: let
   configHost = config;
+  vmName = "docker-vm";
+  macAddress = "02:00:00:01:01:02";
   dockervmBaseConfiguration = {
     imports = [
+      (import "${ghafOS}/modules/virtualization/microvm/common/vm-networking.nix" {inherit vmName macAddress;})
       ({lib, ...}: {
         ghaf = {
           users.accounts.enable = lib.mkDefault configHost.ghaf.users.accounts.enable;
@@ -19,48 +22,21 @@
           };
         };
 
-        networking.hostName = "dockervm";
         system.stateVersion = lib.trivial.release;
 
         nixpkgs.buildPlatform.system = configHost.nixpkgs.buildPlatform.system;
         nixpkgs.hostPlatform.system = configHost.nixpkgs.hostPlatform.system;
 
+        time.timeZone = "Asia/Dubai";
+
         microvm.hypervisor = "qemu";
 
-        networking = {
-          enableIPv6 = false;
-          interfaces.ethint0.useDHCP = false;
-          # TODO: fix firewall
-#          firewall.allowedTCPPorts = [22 80 8080 8888 4280 4222 5432];
-#          firewall.allowedUDPPorts = [22 80 8080 8888 4280 4222 5432];
-          firewall.enable = false;
-          useNetworkd = true;
-        };
-
-        microvm.interfaces = [
-          {
-            type = "tap";
-            id = "tap-dockervm";
-            mac = "02:00:00:01:01:02";
-          }
-        ];
-
-        networking.nat = {
-          enable = true;
-          internalInterfaces = ["ethint0"];
-        };
-
-        # Set internal network's interface name to ethint0
         systemd.network.links."10-ethint0" = {
-          matchConfig.PermanentMACAddress = "02:00:00:01:01:02";
-          linkConfig.Name = "ethint0";
           extraConfig = "MTUBytes=1460";
         };
 
         systemd.network = {
-          enable = true;
           networks."10-ethint0" = {
-            matchConfig.MACAddress = "02:00:00:01:01:02";
             addresses = [
               {                          
                 # IP-address for debugging subnet                                      
@@ -69,9 +45,7 @@
             ];             
             routes =  [                
               { routeConfig.Gateway = "192.168.101.1"; }                               
-            ];                        
-            linkConfig.RequiredForOnline = "routable";                                 
-            linkConfig.ActivationPolicy = "always-up";
+            ];
           };
         };
 
@@ -137,7 +111,6 @@
 	        }
         ];
 
-        #microvm.qemu.bios.enable = false;
         microvm.storeDiskType = "squashfs";
         microvm.mem = 4096;
         microvm.vcpu = 2;

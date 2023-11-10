@@ -4,9 +4,12 @@
 #
 [
   ./dci
+  ./development/debug-tools.nix
+  ./graphics/weston.ini.nix
   ./hostname-service
   ./include-optional-files
   ./installer
   ./registration-agent
   ./portforwarding-service
+  ./users/accounts.nix
 ]

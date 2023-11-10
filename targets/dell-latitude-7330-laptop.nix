@@ -15,6 +15,7 @@
   formatModule = nixos-generators.nixosModules.raw-efi;
   dell-7330-x86 = variant: extraModules: let
     netvmExtraModules = [
+      (import ../modules/virtualization/microvm/netvm.nix {inherit ghafOS;})
       {
         microvm.devices = [
           {
@@ -62,7 +63,7 @@
           microvm.nixosModules.host
           (import "${ghafOS}/modules/host")
           (import "${ghafOS}/modules/virtualization/microvm/microvm-host.nix")
-          (import ../modules/virtualization/microvm/netvm.nix {inherit ghafOS;})
+          (import "${ghafOS}/modules/virtualization/microvm/netvm.nix")
           (import ../modules/virtualization/microvm/dockervm.nix {inherit ghafOS;})
           {
             services = {
@@ -96,13 +97,6 @@
                 #TODO clean this up when the microvm is updated to latest
                 release.enable = variant == "release";
                 debug.enable = variant == "debug";
-              };
-              graphics.demo-apps = with lib; mkForce {
-                chromium        = true;
-                firefox         = false;
-                gala-app        = false;
-                element-desktop = false;
-                zathura         = false;
               };
             };
           }
@@ -140,7 +134,7 @@
     name = "${name}-${variant}";
     package = hostConfiguration.config.system.build.${hostConfiguration.config.formatAttr};
   };
-  debugModules = [../modules/development/usb-serial.nix {ghaf.development.usb-serial.enable = true;}];
+  debugModules = [(import "${ghafOS}/modules/development/usb-serial.nix") {ghaf.development.usb-serial.enable = true;}];
   targets = [
     (dell-7330-x86 "debug" debugModules)
     (dell-7330-x86 "release" [])
