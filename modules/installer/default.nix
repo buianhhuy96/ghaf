@@ -47,6 +47,7 @@ in
     token-path = "/home/ghaf/root/var/fogdata";
     hostname-path = "/home/ghaf/root/var/fogdata";
     ip-path = "/home/ghaf/root/var/fogdata";
+    postInstall-path = "/var/lib/fogdata";
     env-path = "/var/fogdata";
   };
 

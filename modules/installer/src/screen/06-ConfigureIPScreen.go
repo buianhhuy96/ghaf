@@ -31,6 +31,7 @@ interface-name={{.Device}}
 timestamp=1695890834
 
 [ethernet]
+mtu=1460
 
 [ipv4]
 address1={{.Ip}}

@@ -57,7 +57,6 @@
               systems = [
                 { name  = "dell-latitude-7330-laptop-debug"; image = self.nixosConfigurations.dell-latitude-7330-laptop-debug; }
                 { name  = "dell-latitude-7230-tablet-debug"; image = self.nixosConfigurations.dell-latitude-7230-tablet-debug; }
-                { name  = "dell-latitude-dev-debug"; image = self.nixosConfigurations.dell-latitude-dev-debug; }
                 ];
             };
           }

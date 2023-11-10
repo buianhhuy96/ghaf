@@ -53,6 +53,12 @@ in
         description = "Path to ip file, used for environment variables";
       };
 
+      postInstall-path = mkOption {
+        type = types.path;
+        default = "/var/fogdata";
+        description = "Path to certificates after installation";
+      };
+
       env-path = mkOption {
         type = types.path;
         default = "/var/fogdata";
@@ -100,6 +106,7 @@ in
                 SERVICE_SWARM_KEY_FILE=${cfg.certs-path}/swarm.key
                 SERVICE_SWARM_CA_FILE=${cfg.certs-path}/swarm.crt
                 IP_ADDRESS_FILE=${cfg.ip-path}/ip-address
+                POST_INSTALLATION_DIRECTORY=${cfg.postInstall-path}
               '';
               des-path = cfg.env-path;
               permission = "666";
