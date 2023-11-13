@@ -48,6 +48,12 @@
             dport = "4222";
             sport = "4222";
           };
+
+          avahi = {
+            enable = true;
+            nssmdns = true;
+            reflector = true;
+          };
         };
 
         networking = {
