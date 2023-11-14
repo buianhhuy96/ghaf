@@ -15,7 +15,10 @@
   formatModule = nixos-generators.nixosModules.raw-efi;
   dell-7230-x86 = variant: extraModules: let
     netvmExtraModules = [
+      # FMO specific settings for NetVM
       (import ../modules/virtualization/microvm/netvm.nix {inherit ghafOS;})
+
+      # Device-specific settings for NetVM
       {
         microvm.devices = [
           {

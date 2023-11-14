@@ -14,12 +14,13 @@ in
     SUBSYSTEM=="net", ACTION=="add", DRIVERS=="e1000e", SUBSYSTEMS=="pci", ATTRS{vendor}=="0x8086", NAME="eth0"
   '';
 
-  #microvm.qemu.extraArgs = [
-  #  "-usb"
-  #  "-device"
-  #  "usb-host,vendorid=0x0525,productid=0xa4a2"
-  #];
-
+  microvm.devices = [
+    {
+      bus = "usb";
+      path = "vendorid=0x0525,productid=0xa4a2";
+    }
+  ];
+  
   services =
   {
     portforwarding-service = {
