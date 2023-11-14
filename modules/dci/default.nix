@@ -42,9 +42,18 @@ in {
       # If you use podman
       # after = ["podman.service" "podman.socket"];
       # If you use docker
-      after = ["docker.service" "docker.socket" "network-online.target"];
+      after = [
+        "docker.service" 
+        "docker.socket"
+        "network-online.target"
+      ] 
+      ++ optionals config.services.registration-agent.enable  [ "fmo-registration-agent-execution.service" ];
+      
       # TODO: restart always
-      serviceConfig.Restart = lib.mkForce "always";
+      serviceConfig = {
+        Restart = lib.mkForce "always";
+        RestartSec = "30";
+      };
     };
   };
 }
