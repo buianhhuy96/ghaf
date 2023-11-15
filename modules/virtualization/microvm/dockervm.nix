@@ -110,7 +110,7 @@
 	  {
             image = "/var/tmp/docker.img";
             mountPoint = "/var/lib/docker";
-            size = 10240;
+            size = 51200;
             autoCreate = true;
             fsType = "ext4";
 	  }
