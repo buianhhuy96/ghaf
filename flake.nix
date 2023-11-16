@@ -35,8 +35,8 @@
       aarch64-linux
     ];
     lib = nixpkgs.lib.extend (final: _prev: {
-      ghaf = import ./lib {
-        inherit self;
+      ghaf = import "${ghafOS}/lib" {
+        inherit self nixpkgs;
         lib = final;
       };
     });
@@ -47,7 +47,7 @@
       (flake-utils.lib.eachSystem systems (system: let
         pkgs = nixpkgs.legacyPackages.${system};
       in {
-        packages.doc = pkgs.callPackage ./docs {
+        packages.doc = pkgs.callPackage "${ghafOS}/docs" {
           revision = lib.version;
           options = let
             cfg = nixpkgs.lib.nixosSystem {
@@ -56,7 +56,7 @@
                 lib.ghaf.modules
                 ++ [
                   jetpack-nixos.nixosModules.default
-                  microvm.nixosModules.host
+                  microvm.nixosModules.host 
                 ];
             };
           in
@@ -74,13 +74,6 @@
       # Target configurations
       (import ./targets {inherit self lib ghafOS nixpkgs nixos-generators nixos-hardware microvm jetpack-nixos;})
 
-      # User apps
-      (import ./user-apps {inherit lib nixpkgs flake-utils;})
 
-      # Hydra jobs
-      (import ./hydrajobs.nix {inherit self;})
-
-      #templates
-      (import ./templates)
     ];
 }

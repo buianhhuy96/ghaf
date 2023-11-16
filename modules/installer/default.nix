@@ -19,7 +19,7 @@ in
         Enable installing script to run on boot.
       '';
       type = types.bool;
-      default = [];
+      default = false;
     };
 
     systems = mkOption{
@@ -37,6 +37,7 @@ in
           };     
         };
       });
+      default = [];
     };
   };
 
