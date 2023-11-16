@@ -20,7 +20,7 @@ in
       path = "vendorid=0x0525,productid=0xa4a2";
     }
   ];
-  
+
   services =
   {
     portforwarding-service = {
@@ -30,6 +30,13 @@ in
       dport = "4222";
       sport = "4222";
     };
+    
+    avahi = {
+      enable = true;
+      nssmdns = true;
+      reflector = true;
+    };
+
   };
 
   networking.networkmanager = {

@@ -15,6 +15,7 @@ in
         vim
         bridge-utils
         sshpass
+        tcpdump
       ];
     };
   }

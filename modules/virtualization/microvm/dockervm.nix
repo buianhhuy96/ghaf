@@ -72,7 +72,7 @@
             token-path = "/var/lib/fogdata";
             hostname-path = "/var/lib/fogdata";
             ip-path = "/var/lib/fogdata";
-            postInstall-path = "/var/lib/fogdata";
+            postInstall-path = "/var/lib/fogdata/certs";
             env-path = "/home/ghaf";
           };
           avahi.enable = true;
@@ -84,7 +84,7 @@
 	        {
             image = "/var/tmp/docker.img";
             mountPoint = "/var/lib/docker";
-            size = 10240;
+            size = 51200;
             autoCreate = true;
             fsType = "ext4";
 	        }

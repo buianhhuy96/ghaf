@@ -55,7 +55,7 @@ in
 
       postInstall-path = mkOption {
         type = types.path;
-        default = "/var/fogdata";
+        default = "/var/fogdata/certs";
         description = "Path to certificates after installation";
       };
 

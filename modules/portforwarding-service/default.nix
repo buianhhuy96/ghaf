@@ -46,11 +46,9 @@ in {
         # open mdns port
         # TODO: DIRTY HACK remove it and do in proper way
         ${pkgs.iptables}/bin/iptables -I INPUT -p udp --dport 5353 -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p udp -d 224.0.0.251 --dport 5353 -j DNAT --to-destination ${cfg.dip}:5353
-        ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p udp -d $IP --dport 5353 -j DNAT --to-destination ${cfg.dip}:5353
 
         # TODO: DIRTY HACK remove it and do in proper way
-        ${pkgs.iptables}/bin/iptables -I INPUT -p udp --dport 7222 -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -I INPUT -p tcp --dport 7222 -j ACCEPT
         ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p tcp -d $IP --dport 7222 -j DNAT --to-destination ${cfg.dip}:7222
       '';
 
