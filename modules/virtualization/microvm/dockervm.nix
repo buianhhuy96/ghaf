@@ -98,7 +98,7 @@
             token-path = "/var/lib/fogdata";
             hostname-path = "/var/lib/fogdata";
             ip-path = "/var/lib/fogdata";
-            postInstall-path = "/var/lib/fogdata";
+            postInstall-path = "/var/lib/fogdata/certs";
             env-path = "/home/ghaf";
           };
           avahi.enable = true;

@@ -19,7 +19,7 @@ in
         Enable installing script to run on boot.
       '';
       type = types.bool;
-      default = [];
+      default = false;
     };
 
     systems = mkOption{
@@ -37,6 +37,7 @@ in
           };     
         };
       });
+      default = [];
     };
   };
 
@@ -47,7 +48,7 @@ in
     token-path = "/home/ghaf/root/var/fogdata";
     hostname-path = "/home/ghaf/root/var/fogdata";
     ip-path = "/home/ghaf/root/var/fogdata";
-    postInstall-path = "/var/lib/fogdata";
+    postInstall-path = "/var/lib/fogdata/certs";
     env-path = "/var/fogdata";
   };
 
