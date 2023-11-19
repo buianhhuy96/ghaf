@@ -59,6 +59,12 @@ in
                     (mkIf ( (builtins.typeOf src) == "path") 
                       "${src}")  
                       ]).contents) 0).content);
+              mindepth = ((builtins.elemAt (builtins.filter (c: c.condition) (mkMerge [
+                    (mkIf ( (builtins.readFileType src) != "directory")
+                      "0")
+                    (mkIf ( (builtins.readFileType src) == "directory")
+                      "1")
+                      ]).contents) 0).content);
 
             in {
               services.${filename} = {  
@@ -91,7 +97,7 @@ in
                             ${pkgs.coreutils}/bin/mkdir -p ${des}
                             '';
                       ExecStart = ''
-                        ${pkgs.findutils}/bin/find "${src-data}" -mindepth 1 -exec install {} ${des} \;
+                        ${pkgs.findutils}/bin/find "${src-data}" -mindepth ${mindepth} -exec install {} ${des} \;
                         '';
                   })
                   (mkIf ( src != null && permission != null) 
@@ -101,7 +107,7 @@ in
                             ${pkgs.coreutils}/bin/mkdir -p ${des}
                             '';
                       ExecStart = ''
-                        ${pkgs.findutils}/bin/find "${src-data}" -mindepth 1 -exec install -m ${permission} {} ${des} \;
+                        ${pkgs.findutils}/bin/find "${src-data}" -mindepth ${mindepth} -exec install -m ${permission} {} ${des} \;
                         '';
                   })         
                   ]);
