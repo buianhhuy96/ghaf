@@ -50,6 +50,11 @@ in {
         # TODO: DIRTY HACK remove it and do in proper way
         ${pkgs.iptables}/bin/iptables -I INPUT -p tcp --dport 7222 -j ACCEPT
         ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p tcp -d $IP --dport 7222 -j DNAT --to-destination ${cfg.dip}:7222
+
+
+        # TODO: DIRTY HACK remove it and do in proper way
+        ${pkgs.iptables}/bin/iptables -I INPUT -p tcp --dport 4223 -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p tcp -d $IP --dport 4223 -j DNAT --to-destination ${cfg.dip}:4223
       '';
 
       wantedBy = ["network.target"];
