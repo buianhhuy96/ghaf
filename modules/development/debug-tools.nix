@@ -36,6 +36,7 @@ in
         bridge-utils
         sshpass
         tcpdump
+        gpsd
       ];
     };
   }

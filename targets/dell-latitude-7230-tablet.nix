@@ -53,6 +53,7 @@
             services.udev.extraRules = ''
               # Add usb to kvm group
               SUBSYSTEM=="usb", ATTR{idVendor}=="0525", ATTR{idProduct}=="a4a2", GROUP+="kvm"
+              SUBSYSTEM=="usb", ATTR{idVendor}=="1546", ATTR{idProduct}=="01a9", GROUP+="kvm"
             '';
 
             ghaf = {

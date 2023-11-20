@@ -27,6 +27,12 @@
 
         microvm.hypervisor = "qemu";
 
+        microvm.qemu.extraArgs = [
+          "-usb"
+          "-device"
+          "usb-host,vendorid=0x1546,productid=0x01a9"
+        ];
+
         networking = {
           enableIPv6 = false;
           interfaces.ethint0.useDHCP = false;
