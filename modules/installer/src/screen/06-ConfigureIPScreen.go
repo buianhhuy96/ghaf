@@ -35,7 +35,7 @@ mtu=1460
 
 [ipv4]
 address1={{.Ip}}
-method=auto
+method={{.Method}}
 
 [ipv6]
 addr-gen-mode=default
@@ -47,11 +47,12 @@ var IPAddrTemplate   = "{{.Ip}}"
 var HostnameTemplate = "{{.Hostname}}"
 
 type NMConnection struct {
-	Id       string
-	Uid      string
-	Ip       string
-	Device   string
-	Hostname string
+	Id        string
+	Uid       string
+	Ip        string
+	Device    string
+	Hostname  string
+	Method    string
 }
 
 // Method to get the heading message of screen
@@ -87,14 +88,32 @@ func (m ScreensMethods) ConfigureIPScreen() {
 		}
 	}
 
+	setupGW := false
+	// Ask user for input IP address
+	for !setupGW {
+		userIP, _ := pterm.DefaultInteractiveTextInput.
+			WithMultiLine(false).
+			Show("dafault GW for destanation system (default: None)")
+		// If leave empty, use default IP
+		if strings.TrimSpace(userIP) == "" {
+			setupGW = true
+			// If not empty, validate if IP is valid
+		} else if net.ParseIP(strings.TrimSpace(userIP)) != nil {
+			sysIP += "," + strings.TrimSpace(userIP)
+			setupGW = true
+		} else {
+			pterm.Error.Printfln("Input IP address is not valid IPv4 format (x.x.x.x)")
+		}
+	}
+
 	pterm.Info.Printfln("System IP address is: " + sysIP)
 
 	// Write to IP config files
-	writeConnectionFile(NMConnection{"WireEth0", UidEth,  sysIP, DeviceEth, ""}, NMTemplate, NMConfigFileEth, IPConfigFilePathNetVM, "600")
-	writeConnectionFile(NMConnection{"WireMesh0", UidMesh, sysIP, DeviceMesh, ""}, NMTemplate, NMConfigFileMesh, IPConfigFilePathNetVM, "600")
-	writeConnectionFile(NMConnection{"", "", strings.Split(sysIP, "/")[0], "", ""}, IPAddrTemplate, IPConfigFile, IPConfigFilePathNetVM, "644")
-	writeConnectionFile(NMConnection{"", "", strings.Split(sysIP, "/")[0], "", ""}, IPAddrTemplate, IPConfigFile, IPConfigFilePathDockerVM, "644")
-	writeConnectionFile(NMConnection{"", "", strings.Split(sysIP, "/")[0], "", "dockervm"}, HostnameTemplate, HostnameConfigFile, IPConfigFilePathDockerVM, "644")
+	writeConnectionFile(NMConnection{"WireEth0", UidEth,  sysIP, DeviceEth, "", "auto"}, NMTemplate, NMConfigFileEth, IPConfigFilePathNetVM, "600")
+	writeConnectionFile(NMConnection{"WireMesh0", UidMesh, sysIP, DeviceMesh, "", "manual"}, NMTemplate, NMConfigFileMesh, IPConfigFilePathNetVM, "600")
+	writeConnectionFile(NMConnection{"", "", strings.Split(sysIP, "/")[0], "", "", ""}, IPAddrTemplate, IPConfigFile, IPConfigFilePathNetVM, "644")
+	writeConnectionFile(NMConnection{"", "", strings.Split(sysIP, "/")[0], "", "", ""}, IPAddrTemplate, IPConfigFile, IPConfigFilePathDockerVM, "644")
+	writeConnectionFile(NMConnection{"", "", strings.Split(sysIP, "/")[0], "", "dockervm", ""}, HostnameTemplate, HostnameConfigFile, IPConfigFilePathDockerVM, "644")
 
 	time.Sleep(1)
 

@@ -62,6 +62,7 @@
           firewall.allowedTCPPorts = [22];
           firewall.allowedUDPPorts = [67];
           useNetworkd = true;
+          useDHCP = false;
         };
 
         networking.networkmanager = {
