@@ -108,20 +108,6 @@
             env-path = "/home/ghaf";
           };
 
-          file-list = lib.mkIf (builtins.pathExists ../../tii-offline-map) {
-            enable = true;
-            enabledFiles = [
-              "tii-offline-map"
-              ];
-            file-info = {
-              tii-offline-map = {
-                src-path = ../../tii-offline-map;
-                des-path = "/var/lib/fogdata";
-                permission = "644";
-              };
-            };
-          };
-
           avahi.enable = true;
           avahi.nssmdns = true;
         };
