@@ -87,6 +87,7 @@
             enable = true;
             compose-path = "/var/lib/fogdata/docker-compose.yml";
             pat-path = "/var/lib/fogdata/PAT.pat";
+            preloaded-images = "tii-offline-map-data-loader.tar.gz";
           };
 
           hostname-service = {
