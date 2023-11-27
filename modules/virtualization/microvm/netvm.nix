@@ -3,6 +3,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   configHost = config;
@@ -17,6 +18,24 @@
             ssh.daemon.enable = lib.mkDefault configHost.ghaf.development.ssh.daemon.enable;
             debug.tools.enable = lib.mkDefault configHost.ghaf.development.debug.tools.enable;
           };
+        };
+
+        # SSH is very picky about the file permissions and ownership and will
+        # accept neither direct path inside /nix/store or symlink that points
+        # there. Therefore we copy the file to /etc/ssh/get-auth-keys (by
+        # setting mode), instead of symlinking it.
+        environment.etc."ssh/get-auth-keys" = {
+          source = let
+            script = pkgs.writeShellScriptBin "get-auth-keys" ''
+              [[ "$1" != "ghaf" ]] && exit 0
+              ${pkgs.coreutils}/bin/cat /run/ssh-public-key/id_ed25519.pub
+            '';
+          in "${script}/bin/get-auth-keys";
+          mode = "0555";
+        };
+        services.openssh = {
+          authorizedKeysCommand = "/etc/ssh/get-auth-keys";
+          authorizedKeysCommandUser = "nobody";
         };
 
         networking.hostName = "netvm";
@@ -128,8 +147,15 @@
             source = "/nix/store";
             mountPoint = "/nix/.ro-store";
           }
+
+          {
+            tag = "ssh-public-key";
+            source = "/run/ssh-public-key";
+            mountPoint = "/run/ssh-public-key";
+          }
         ];
         microvm.writableStoreOverlay = lib.mkIf config.ghaf.development.debug.tools.enable "/nix/.rw-store";
+        fileSystems."/run/ssh-public-key".options = ["ro"];
 
         microvm.qemu.bios.enable = false;
         microvm.storeDiskType = "squashfs";
@@ -164,5 +190,48 @@ in {
         };
       specialArgs = {inherit lib;};
     };
+
+  systemd.services."psk-ssh-keygen" = let
+    keygenScript = pkgs.writeShellScriptBin "psk-ssh-keygen" ''
+      set -xeuo pipefail
+      mkdir -p /run/ssh-keys
+      echo -en "\n\n\n" | ${pkgs.openssh}/bin/ssh-keygen -t ed25519 -f /run/ssh-keys/id_ed25519 -C ""
+      chown ghaf:ghaf /run/ssh-keys/*
+      cp /run/ssh-keys/id_ed25519.pub /run/ssh-public-key/id_ed25519.pub
+    '';
+  in {
+    enable = true;
+    description = "Generate SSH keys for Waypipe";
+    path = [keygenScript];
+    wantedBy = ["multi-user.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      StandardOutput = "journal";
+      StandardError = "journal";
+      ExecStart = "${keygenScript}/bin/psk-ssh-keygen";
+    };
+  };
+
+ # This directory needs to be created before any of the microvms start.
+    systemd.services."create-ssh-public-key-directory" = let
+    script = pkgs.writeShellScriptBin "create-ssh-public-key-directory" ''
+      mkdir -pv /run/ssh-public-key
+      chown -v microvm /run/ssh-public-key
+    '';
+  in {
+    enable = true;
+    description = "Create shared directory on host";
+    path = [];
+    wantedBy = ["microvms.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      StandardOutput = "journal";
+      StandardError = "journal";
+      ExecStart = "${script}/bin/create-ssh-public-key-directory";
+    };
+  };
+
   };
 }

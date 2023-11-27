@@ -3,6 +3,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   configHost = config;
@@ -17,6 +18,24 @@
             ssh.daemon.enable = lib.mkDefault configHost.ghaf.development.ssh.daemon.enable;
             debug.tools.enable = lib.mkDefault configHost.ghaf.development.debug.tools.enable;
           };
+        };
+
+        # SSH is very picky about the file permissions and ownership and will
+        # accept neither direct path inside /nix/store or symlink that points
+        # there. Therefore we copy the file to /etc/ssh/get-auth-keys (by
+        # setting mode), instead of symlinking it.
+        environment.etc."ssh/get-auth-keys" = {
+          source = let
+            script = pkgs.writeShellScriptBin "get-auth-keys" ''
+              [[ "$1" != "ghaf" ]] && exit 0
+              ${pkgs.coreutils}/bin/cat /run/ssh-public-key/id_ed25519.pub
+            '';
+          in "${script}/bin/get-auth-keys";
+          mode = "0555";
+        };
+        services.openssh = {
+          authorizedKeysCommand = "/etc/ssh/get-auth-keys";
+          authorizedKeysCommandUser = "nobody";
         };
 
         networking.hostName = "dockervm";
@@ -151,8 +170,15 @@
             source = "/nix/store";
             mountPoint = "/nix/.ro-store";
           }
+
+          {
+            tag = "ssh-public-key";
+            source = "/run/ssh-public-key";
+            mountPoint = "/run/ssh-public-key";
+          }
         ];
         microvm.writableStoreOverlay = lib.mkIf config.ghaf.development.debug.tools.enable "/nix/.rw-store";
+        fileSystems."/run/ssh-public-key".options = ["ro"];
 
         microvm.qemu.bios.enable = false;
         microvm.storeDiskType = "squashfs";
