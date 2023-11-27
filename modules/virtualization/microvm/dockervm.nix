@@ -151,8 +151,8 @@
             source = "/nix/store";
             mountPoint = "/nix/.ro-store";
           }
-
         ];
+        microvm.writableStoreOverlay = lib.mkIf config.ghaf.development.debug.tools.enable "/nix/.rw-store";
 
         microvm.qemu.bios.enable = false;
         microvm.storeDiskType = "squashfs";
