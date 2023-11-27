@@ -144,6 +144,14 @@
 	    proto = "virtiofs";
 	    socket = "fogdata.sock";
 	  }
+
+          # Use host's /nix/store to reduce size of the image
+          {
+            tag = "ro-store";
+            source = "/nix/store";
+            mountPoint = "/nix/.ro-store";
+          }
+
         ];
 
         microvm.qemu.bios.enable = false;
