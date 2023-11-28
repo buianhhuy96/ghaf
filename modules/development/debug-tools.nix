@@ -37,6 +37,7 @@ in
         sshpass
         tcpdump
         gpsd
+        networkmanagerapplet
       ];
     };
   }

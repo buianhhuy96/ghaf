@@ -38,6 +38,11 @@
       path = "${pkgs.chromium}/bin/chromium --enable-features=UseOzonePlatform --ozone-platform=wayland 192.168.101.11";
       icon = "${pkgs.chromium}/share/icons/hicolor/24x24/apps/chromium.png";
     }
+
+    {
+      path = "/etc/xdg/weston/bin/nmLauncher";
+      icon = "${pkgs.networkmanagerapplet}/share/icons/hicolor/22x22/apps/nm-device-wwan.png";
+    }
   ];
 in {
   options.ghaf.graphics.weston = with lib; {
@@ -93,6 +98,27 @@ in {
 
       # The UNIX file mode bits
       mode = "0644";
+    };
+
+    environment.etc."xdg/weston/bin/nmLauncher" = {
+      source = let
+        script = pkgs.writeShellScriptBin "nmLauncher" ''
+          export DBUS_SESSION_BUS_ADDRESS=unix:path=/tmp/ssh_session_dbus.sock
+          export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/tmp/ssh_system_dbus.sock
+          ${pkgs.openssh}/bin/ssh -M -S /tmp/ssh_control_socket \
+              -f -N -q ghaf@192.168.100.1 \
+              -i /run/ssh-keys/id_ed25519 \
+              -o StrictHostKeyChecking=no \
+              -o StreamLocalBindUnlink=yes \
+              -o ExitOnForwardFailure=yes \
+              -L /tmp/ssh_session_dbus.sock:/run/user/1000/bus \
+              -L /tmp/ssh_system_dbus.sock:/run/dbus/system_bus_socket
+          ${pkgs.networkmanagerapplet}/bin/nm-connection-editor
+          # Use the control socket to close the ssh tunnel.
+          ${pkgs.openssh}/bin/ssh -q -S /tmp/ssh_control_socket -O exit ghaf@192.168.100.1
+        '';
+      in "${script}/bin/nmLauncher";
+      mode = "0555";
     };
   };
 }
