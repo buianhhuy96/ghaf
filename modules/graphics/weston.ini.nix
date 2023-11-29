@@ -89,11 +89,7 @@ in {
       extraRules = [{
         commands = [
           {
-            command = "${config.system.path}/bin/reboot";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "${config.system.path}/bin/poweroff";
+            command = "${config.system.path}/bin/shutdown";
             options = [ "NOPASSWD" ];
           }
         ];

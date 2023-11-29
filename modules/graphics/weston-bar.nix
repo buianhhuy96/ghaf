@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
 
   src =  builtins.fetchGit {
     url = "https://github.com/buianhhuy96/weston-bar";
-    rev = "b7f717dfac08c59490e7abec59735cfc3e23d119";
+    rev = "da12de5ff149a7d8cf52bd3c5e497ae996162530";
   };
 
   strictDeps = true;
