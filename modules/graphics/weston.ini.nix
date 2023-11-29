@@ -140,6 +140,7 @@ in {
         script = pkgs.writeShellScriptBin "nmLauncher" ''
           export DBUS_SESSION_BUS_ADDRESS=unix:path=/tmp/ssh_session_dbus.sock
           export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/tmp/ssh_system_dbus.sock
+          ${pkgs.openssh}/bin/ssh-keygen -R 192.168.100.1
           ${pkgs.openssh}/bin/ssh -M -S /tmp/ssh_control_socket \
               -f -N -q ghaf@192.168.100.1 \
               -i /run/ssh-keys/id_ed25519 \
