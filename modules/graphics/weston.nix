@@ -7,6 +7,7 @@
   ...
 }: let
   cfg = config.ghaf.graphics.weston;
+  weston-12= pkgs.callPackage ./weston-12/weston-12.0.2.nix {};
 in {
   options.ghaf.graphics.weston = {
     enable = lib.mkEnableOption "weston";
@@ -20,7 +21,7 @@ in {
 
     environment.noXlibs = false;
     environment.systemPackages = with pkgs; [
-      weston
+      weston-12
       # Seatd is needed to manage log-in process for weston
       seatd
     ];
@@ -63,7 +64,7 @@ in {
         # Defaults to journal
         StandardOutput = "journal";
         StandardError = "journal";
-        ExecStart = "${pkgs.weston}/bin/weston";
+        ExecStart = "${weston-12}/bin/weston";
         # Ivan N: I do not know if this is bug or feature of NixOS, but
         # when I add weston.ini file to environment.etc, the file ends up in
         # /etc/xdg directory on the filesystem, while NixOS uses

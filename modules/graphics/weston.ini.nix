@@ -7,6 +7,11 @@
   ...
 }: let
   cfg = config.ghaf.graphics.weston;
+  weston-bar = pkgs.callPackage ./weston-bar.nix {};
+  # Weston 12 required for the bar to work. So use as a package here
+  # To be deleted when update to nixpkgs-23.11
+  weston-12= pkgs.callPackage ./weston-12/weston-12.0.2.nix {};
+
   mkLauncher = {
     path,
     icon,
@@ -30,13 +35,13 @@
     # Add application launchers
     # Adding terminal launcher because it is overwritten if other launchers are on the panel
     {
-      path = "${pkgs.weston}/bin/weston-terminal";
-      icon = "${pkgs.weston}/share/weston/icon_terminal.png";
+      path = "${weston-12}/bin/weston-terminal";
+      icon = "${weston-12}/share/weston/icon_terminal.png";
     }
 
     {
       path = "${pkgs.chromium}/bin/chromium --enable-features=UseOzonePlatform --ozone-platform=wayland 192.168.101.11";
-      icon = "${pkgs.chromium}/share/icons/hicolor/24x24/apps/chromium.png";
+      icon = "${pkgs.chromium}/share/icons/hicolor/48x48/apps/chromium.png";
     }
 
     {
@@ -67,6 +72,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     ghaf.graphics.weston.launchers = lib.optionals cfg.enableDemoApplications demoLaunchers;
+  
     environment.systemPackages = with pkgs;
       lib.optionals cfg.enableDemoApplications [
         # Graphical applications
@@ -76,23 +82,52 @@ in {
         gala-app
         zathura
       ];
+
+    # Allow to execute reboot and shutdown without password
+    security.sudo = {
+      enable = true;
+      extraRules = [{
+        commands = [
+          {
+            command = "${config.system.path}/bin/reboot";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "${config.system.path}/bin/poweroff";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+        users = [ "ghaf" ];
+      }];
+    };
     environment.etc."xdg/weston/weston.ini" = {
       text =
         ''
           # Disable screen locking
           [core]
           idle-time=0
-
+          modules=${weston-bar}/lib/shell_helper.so
+  
           [shell]
+          client=${weston-bar}/bin/weston-bar
           locking=false
           background-image=${./assets/wallpaper.jpg}
           background-type=scale-crop
-
+          animation=none
+          close-animation=none
+          startup-animation=none
+          focus-animation=none
+          panel-position=bottom
+          default_icon=${weston-bar.src}/source/icons
+  
+          [libinput]
+          enable-tap=true
+  
           # Enable Hack font for weston-terminal
           [terminal]
           font=Hack
           font-size=16
-
+  
         ''
         + mkLaunchers cfg.launchers;
 
