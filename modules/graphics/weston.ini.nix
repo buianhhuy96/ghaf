@@ -8,6 +8,32 @@
 }: let
   cfg = config.ghaf.graphics.weston;
   weston-bar = pkgs.callPackage ./weston-bar.nix {};
+  weston-ini = ''
+          # Disable screen locking
+          [core]
+          idle-time=0
+          modules=${weston-bar}/lib/shell_helper.so
+
+          [shell]
+          client=${weston-bar}/bin/weston-bar
+          locking=false
+          background-image=${./assets/wallpaper.jpg}
+          background-type=scale-crop
+          animation=none
+          close-animation=none
+          startup-animation=none
+          focus-animation=none
+          panel-position=bottom
+          default_icon=${weston-bar.src}/source/icons
+
+          [libinput]
+          enable-tap=true
+
+          # Enable Hack font for weston-terminal
+          [terminal]
+          font=Hack
+          font-size=16
+        '';
   # Weston 12 required for the bar to work. So use as a package here
   # To be deleted when update to nixpkgs-23.11
   weston-12= pkgs.callPackage ./weston-12/weston-12.0.2.nix {};
@@ -96,34 +122,24 @@ in {
         users = [ "ghaf" ];
       }];
     };
-    environment.etc."xdg/weston/weston.ini" = {
-      text =
-        ''
-          # Disable screen locking
-          [core]
-          idle-time=0
-          modules=${weston-bar}/lib/shell_helper.so
-  
-          [shell]
-          client=${weston-bar}/bin/weston-bar
-          locking=false
-          background-image=${./assets/wallpaper.jpg}
-          background-type=scale-crop
-          animation=none
-          close-animation=none
-          startup-animation=none
-          focus-animation=none
-          panel-position=bottom
-          default_icon=${weston-bar.src}/source/icons
-  
-          [libinput]
-          enable-tap=true
-  
-          # Enable Hack font for weston-terminal
-          [terminal]
-          font=Hack
-          font-size=16
-  
+
+    # normal weston config
+    environment.etc."xdg/weston/weston-edp.ini" = {
+      text = weston-ini
+        + mkLaunchers cfg.launchers;
+
+      # The UNIX file mode bits
+      mode = "0644";
+    };
+    
+    # weston config file to use external monitor as only screen
+    environment.etc."xdg/weston/weston-external.ini" = {
+      text = weston-ini
+        + ''
+        [output]
+        name=eDP-1
+        mode=off
+
         ''
         + mkLaunchers cfg.launchers;
 
