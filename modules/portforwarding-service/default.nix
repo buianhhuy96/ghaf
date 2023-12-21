@@ -4,6 +4,14 @@
 with lib;
 let
   cfg = config.services.portforwarding-service;
+
+  mkPortForwardingRule = {dip, sport, dport, proto}: ''
+    echo "Apply a new port forwarding: $IP:${sport} to ${dip}:${dport}"
+    ${pkgs.iptables}/bin/iptables -I INPUT -p ${proto} --dport ${sport} -j ACCEPT
+    ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p tcp -d $IP --dport ${sport} -j DNAT --to-destination ${dip}:${dport}
+
+  '';
+
 in {
   options.services.portforwarding-service = {
     enable = mkEnableOption "portforwarding-service";
@@ -13,48 +21,27 @@ in {
       description = "Path to ipaddress file";
     };
 
-    dip = mkOption {
-      type = types.str;
-      description = "Destanation IP";
-    };
-
-    sport = mkOption {
-      type = types.str;
-      description = "Source port";
-    };
-
-    dport = mkOption {
-      type = types.str;
-      description = "Destanation port";
+    configuration = mkOption {
+      type = types.listOf types.attrs;
+      description = ''
+        List of
+          {
+            dip = destanation IP address,
+            sport = source port,
+            dport = destanation port,
+            proto = protocol (udp, tcp)
+          }
+      '';
     };
 
   };
 
   config = mkIf cfg.enable {
-
     systemd.services.fmo-portforwarding-service = {
-    script = ''
-        IP=$(${pkgs.gawk}/bin/gawk '{print $1}' ${cfg.ipaddress-path})
+      script = ''
+          IP=$(${pkgs.gawk}/bin/gawk '{print $1}' ${cfg.ipaddress-path})
 
-        echo "Apply a new port forwarding: $IP:${cfg.sport} to ${cfg.dip}:${cfg.dport}"
-
-        # TODO: open only used port
-        ${pkgs.iptables}/bin/iptables -I INPUT -p tcp --dport ${cfg.sport} -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p tcp -d $IP --dport ${cfg.sport} -j DNAT --to-destination ${cfg.dip}:${cfg.dport}
-
-
-        # open mdns port
-        # TODO: DIRTY HACK remove it and do in proper way
-        ${pkgs.iptables}/bin/iptables -I INPUT -p udp --dport 5353 -j ACCEPT
-
-        # TODO: DIRTY HACK remove it and do in proper way
-        ${pkgs.iptables}/bin/iptables -I INPUT -p tcp --dport 7222 -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p tcp -d $IP --dport 7222 -j DNAT --to-destination ${cfg.dip}:7222
-
-
-        # TODO: DIRTY HACK remove it and do in proper way
-        ${pkgs.iptables}/bin/iptables -I INPUT -p tcp --dport 4223 -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -t nat -I PREROUTING -p tcp -d $IP --dport 4223 -j DNAT --to-destination ${cfg.dip}:4223
+          ${ lib.concatStrings (map mkPortForwardingRule cfg.configuration) }
       '';
 
       wantedBy = ["network.target"];

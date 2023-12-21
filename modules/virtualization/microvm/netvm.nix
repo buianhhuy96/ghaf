@@ -63,9 +63,26 @@
           portforwarding-service = {
             enable = true;
             ipaddress-path = "/etc/NetworkManager/system-connections/ip-address";
-            dip = "192.168.101.11";
-            dport = "4222";
-            sport = "4222";
+            configuration = [
+              {
+                dip = "192.168.101.11";
+                dport = "4222";
+                sport = "4222";
+                proto = "tcp";
+              }
+              {
+                dip = "192.168.101.11";
+                dport = "7222";
+                sport = "7222";
+                proto = "tcp";
+              }
+              {
+                dip = "192.168.101.11";
+                dport = "4223";
+                sport = "4223";
+                proto = "tcp";
+              }
+            ];
           };
 
           avahi = {
@@ -79,7 +96,7 @@
           enableIPv6 = false;
           interfaces.ethint0.useDHCP = false;
           firewall.allowedTCPPorts = [22];
-          firewall.allowedUDPPorts = [67];
+          firewall.allowedUDPPorts = [67 5353];
           useNetworkd = true;
           useDHCP = false;
         };
