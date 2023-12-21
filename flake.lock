@@ -18,9 +18,33 @@
         "type": "github"
       }
     },
+    "ghafOS": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "jetpack-nixos": "jetpack-nixos",
+        "microvm": "microvm",
+        "nixos-generators": "nixos-generators",
+        "nixos-hardware": "nixos-hardware",
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1689110953,
+        "narHash": "sha256-oHA0ZCTSzQYZO/KbOxIFTSj0eBy3kJPdN7KONZyyUKc=",
+        "owner": "tiiuae",
+        "repo": "ghaf",
+        "rev": "9638a163542b939735bf34de483a9999a27e55ac",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tiiuae",
+        "repo": "ghaf",
+        "type": "github"
+      }
+    },
     "jetpack-nixos": {
       "inputs": {
         "nixpkgs": [
+          "ghafOS",
           "nixpkgs"
         ]
       },
@@ -41,9 +65,11 @@
     "microvm": {
       "inputs": {
         "flake-utils": [
+          "ghafOS",
           "flake-utils"
         ],
         "nixpkgs": [
+          "ghafOS",
           "nixpkgs"
         ]
       },
@@ -80,6 +106,7 @@
       "inputs": {
         "nixlib": "nixlib",
         "nixpkgs": [
+          "ghafOS",
           "nixpkgs"
         ]
       },
@@ -130,12 +157,7 @@
     },
     "root": {
       "inputs": {
-        "flake-utils": "flake-utils",
-        "jetpack-nixos": "jetpack-nixos",
-        "microvm": "microvm",
-        "nixos-generators": "nixos-generators",
-        "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs"
+        "ghafOS": "ghafOS"
       }
     },
     "systems": {

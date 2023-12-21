@@ -1,6 +1,6 @@
 # Copyright 2022-2023 TII (SSRC) and the Ghaf contributors
 # SPDX-License-Identifier: Apache-2.0
-{
+{ghafOS}:{
   config,
   lib,
   pkgs,
@@ -185,7 +185,7 @@
         microvm.mem = 4096;
         microvm.vcpu = 2;
 
-        imports = (import ../../module-list.nix) ++ (import ../../fmo-module-list.nix);
+        imports = (import "${ghafOS}/modules/module-list.nix") ++ (import ../../fmo-module-list.nix);
       })
     ];
   };

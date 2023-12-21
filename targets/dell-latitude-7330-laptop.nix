@@ -5,6 +5,7 @@
 {
   self,
   lib,
+  ghafOS,
   nixos-generators,
   nixos-hardware,
   microvm,
@@ -55,15 +56,22 @@
     ];
     hostConfiguration = lib.nixosSystem {
       inherit system;
-      specialArgs = {inherit lib;};
+      specialArgs = {inherit lib; inherit ghafOS;};
       modules =
         [
           microvm.nixosModules.host
-          ../modules/host
-          ../modules/virtualization/microvm/microvm-host.nix
-          ../modules/virtualization/microvm/netvm.nix
-          ../modules/virtualization/microvm/dockervm.nix
+          (import "${ghafOS}/modules/host")
+          (import "${ghafOS}/modules/virtualization/microvm/microvm-host.nix")
+          (import "${ghafOS}/modules/virtualization/microvm/netvm.nix")
+          (import ../modules/virtualization/microvm/netvm.nix {inherit ghafOS;})
+          (import ../modules/virtualization/microvm/dockervm.nix {inherit ghafOS;})
           {
+            systemd.network = {
+              networks."10-virbr0" = {
+                linkConfig.RequiredForOnline = "routable";
+                linkConfig.ActivationPolicy = "always-up";
+              };
+            };
             services = {
               registration-agent = {
                 enable = true;
@@ -125,7 +133,7 @@
           }
         ]
         ++ (import ../modules/fmo-module-list.nix)
-        ++ (import ../modules/module-list.nix)
+        ++ (import "${ghafOS}/modules/module-list.nix") 
         ++ extraModules;
     };
   in {
@@ -133,7 +141,7 @@
     name = "${name}-${variant}";
     package = hostConfiguration.config.system.build.${hostConfiguration.config.formatAttr};
   };
-  debugModules = [../modules/development/usb-serial.nix {ghaf.development.usb-serial.enable = true;}];
+  debugModules = [(import "${ghafOS}/modules/development/usb-serial.nix") {ghaf.development.usb-serial.enable = true;}];
   targets = [
     (dell-7330-x86 "debug" debugModules)
     (dell-7330-x86 "release" [])

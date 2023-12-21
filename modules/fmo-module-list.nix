@@ -3,7 +3,17 @@
 #
 #
 [
+  ./dci
+  ./development/debug-tools.nix
+  ./graphics/weston.ini.nix
+  ./graphics/weston.nix
+  ./hardware/x86_64-linux.nix
+  ./hostname-service
   ./include-optional-files
   ./installer
+  ./profiles/applications.nix
+  ./profiles/installer.nix
   ./registration-agent
+  ./portforwarding-service
+  ./users/accounts.nix
 ]

@@ -6,10 +6,10 @@
   config,
   ...
 }: let
-  cfg = config.ghaf.graphics.weston;
+  cfg = config.ghaf.graphics.weston-12;
   weston-12= pkgs.callPackage ./weston-12/weston-12.0.2.nix {};
 in {
-  options.ghaf.graphics.weston = {
+  options.ghaf.graphics.weston-12 = {
     enable = lib.mkEnableOption "weston";
   };
 
@@ -48,7 +48,7 @@ in {
     };
 
     # Weston service
-    systemd.user.services."weston" = {
+    systemd.user.services."weston" = lib.mkDefault {
       enable = true;
       description = "Weston, a Wayland compositor, as a user service TEST";
       documentation = ["man:weston(1) man:weston.ini(5)" "https://wayland.freedesktop.org/"];

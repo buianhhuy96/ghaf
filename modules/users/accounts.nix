@@ -11,25 +11,6 @@ let
   cfg = config.ghaf.users.accounts;
 in
   with lib; {
-    #TODO Extend this to allow definition of multiple users
-    options.ghaf.users.accounts = {
-      enable = mkEnableOption "Default account Setup";
-      user = mkOption {
-        default = "ghaf";
-        type = with types; str;
-        description = ''
-          A default user to create in the system.
-        '';
-      };
-      password = mkOption {
-        default = "ghaf";
-        type = with types; str;
-        description = ''
-          A default password for the user.
-        '';
-      };
-    };
-
     config = mkIf cfg.enable {
       users = {
         mutableUsers = true;

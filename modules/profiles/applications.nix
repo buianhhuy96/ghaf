@@ -9,16 +9,14 @@
   cfg = config.ghaf.profiles.applications;
 in
   with lib; {
-    options.ghaf.profiles.applications = {
-      enable = mkEnableOption "Some sample applications";
-      #TODO Create options to allow enabling individual apps
-      #weston.ini.nix mods needed
-    };
-
     config = mkIf cfg.enable {
       #TODO Should we assert dependency on graphics (weston) profile?
       #For now enable weston + apps
       ghaf.graphics.weston = {
+        enable = mkForce false;
+        enableDemoApplications = mkForce false;
+      };
+      ghaf.graphics.weston-12 = {
         enable = true;
         enableDemoApplications = true;
       };

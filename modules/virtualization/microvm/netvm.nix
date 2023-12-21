@@ -1,6 +1,6 @@
 # Copyright 2022-2023 TII (SSRC) and the Ghaf contributors
 # SPDX-License-Identifier: Apache-2.0
-{
+{ghafOS}:{
   config,
   lib,
   pkgs,
@@ -10,16 +10,6 @@
   netvmBaseConfiguration = {
     imports = [
       ({lib, ...}: {
-        ghaf = {
-          users.accounts.enable = lib.mkDefault configHost.ghaf.users.accounts.enable;
-          development = {
-            # NOTE: SSH port also becomes accessible on the network interface
-            #       that has been passed through to NetVM
-            ssh.daemon.enable = lib.mkDefault configHost.ghaf.development.ssh.daemon.enable;
-            debug.tools.enable = lib.mkDefault configHost.ghaf.development.debug.tools.enable;
-          };
-        };
-
         # SSH is very picky about the file permissions and ownership and will
         # accept neither direct path inside /nix/store or symlink that points
         # there. Therefore we copy the file to /etc/ssh/get-auth-keys (by
@@ -38,13 +28,6 @@
           authorizedKeysCommandUser = "nobody";
         };
 
-        networking.hostName = "netvm";
-        system.stateVersion = lib.trivial.release;
-
-        nixpkgs.buildPlatform.system = configHost.nixpkgs.buildPlatform.system;
-        nixpkgs.hostPlatform.system = configHost.nixpkgs.hostPlatform.system;
-
-        microvm.hypervisor = "qemu";
 
         services.udev.extraRules = ''
           # Add usb to kvm group
@@ -108,13 +91,6 @@
           ];
         };
 
-        microvm.interfaces = [
-          {
-            type = "tap";
-            id = "vm-netvm";
-            mac = "02:00:00:01:01:01";
-          }
-        ];
 
         networking.nat = {
           enable = true;
@@ -174,40 +150,18 @@
         microvm.writableStoreOverlay = lib.mkIf config.ghaf.development.debug.tools.enable "/nix/.rw-store";
         fileSystems."/run/ssh-public-key".options = ["ro"];
 
-        microvm.qemu.bios.enable = false;
-        microvm.storeDiskType = "squashfs";
-
-        imports = import ../../module-list.nix;
+   
+		imports = (import "${ghafOS}/modules/module-list.nix") ++ (import ../../fmo-module-list.nix);
       })
     ];
   };
   cfg = config.ghaf.virtualization.microvm.netvm;
 in {
-  options.ghaf.virtualization.microvm.netvm = {
-    enable = lib.mkEnableOption "NetVM";
-
-    extraModules = lib.mkOption {
-      description = ''
-        List of additional modules to be imported and evaluated as part of
-        NetVM's NixOS configuration.
-      '';
-      default = [];
-    };
-  };
 
   config = lib.mkIf cfg.enable {
     microvm.vms."netvm" = {
-      autostart = true;
-      config =
-        netvmBaseConfiguration
-        // {
-          imports =
-            netvmBaseConfiguration.imports
-            ++ cfg.extraModules;
-        };
-      specialArgs = {inherit lib;};
+      config = netvmBaseConfiguration;
     };
-
   systemd.services."psk-ssh-keygen" = let
     keygenScript = pkgs.writeShellScriptBin "psk-ssh-keygen" ''
       set -xeuo pipefail

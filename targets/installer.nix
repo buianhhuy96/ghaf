@@ -4,6 +4,7 @@
 # Generic x86_64 (for now) computer installer
 {
   self,
+  ghafOS,
   nixpkgs,
   nixos-generators,
   lib,
@@ -16,10 +17,10 @@
 
     installerImgCfg = lib.nixosSystem {
       inherit system;
-      specialArgs = {inherit lib;};
+      specialArgs = {inherit lib; inherit ghafOS;};
       modules =
         [
-          ../modules/host
+          (import "${ghafOS}/modules/host")
           
             
           ({modulesPath, lib, config,...}: {
@@ -67,7 +68,7 @@
           }
         ]
         ++ (import ../modules/fmo-module-list.nix)
-        ++ (import ../modules/module-list.nix) ;
+        ++ (import "${ghafOS}/modules/module-list.nix");
     };
   in {
     name = "${name}-installer";

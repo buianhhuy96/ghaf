@@ -6,7 +6,7 @@
   config,
   ...
 }: let
-  cfg = config.ghaf.graphics.weston;
+  cfg = config.ghaf.graphics.weston-12;
   weston-bar = pkgs.callPackage ./weston-bar.nix {};
   # Weston 12 required for the bar to work. So use as a package here
   # To be deleted when update to nixpkgs-23.11
@@ -30,7 +30,6 @@
   */
   mkLaunchers = lib.concatMapStrings mkLauncher;
 
-  gala-app = pkgs.callPackage ../../user-apps/gala {};
   demoLaunchers = [
     # Add application launchers
     # Adding terminal launcher because it is overwritten if other launchers are on the panel
@@ -50,7 +49,7 @@
     }
   ];
 in {
-  options.ghaf.graphics.weston = with lib; {
+  options.ghaf.graphics.weston-12 = with lib; {
     launchers = mkOption {
       description = "Weston application launchers to show in launch bar";
       default = [];
@@ -71,16 +70,18 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    ghaf.graphics.weston.launchers = lib.optionals cfg.enableDemoApplications demoLaunchers;
+    ghaf.graphics.weston-12.launchers = lib.optionals cfg.enableDemoApplications demoLaunchers;
   
+    fonts.fonts = with pkgs; [
+      fira-code
+      hack-font
+    ];
+    
     environment.systemPackages = with pkgs;
       lib.optionals cfg.enableDemoApplications [
         # Graphical applications
         # Probably, we'll want to re/move it from here later
         chromium
-        element-desktop
-        gala-app
-        zathura
       ];
 
     # Allow to execute reboot and shutdown without password
@@ -96,7 +97,7 @@ in {
         users = [ "ghaf" ];
       }];
     };
-    environment.etc."xdg/weston/weston.ini" = {
+    environment.etc."xdg/weston/weston.ini" = lib.mkForce {
       text =
         ''
           # Disable screen locking
