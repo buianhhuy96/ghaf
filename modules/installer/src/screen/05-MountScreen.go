@@ -14,7 +14,7 @@ func (m ScreensMethods) MountScreenHeading() string {
 func (m ScreensMethods) MountScreen() {
 
 	if !(haveInstalledSystem) {
-		goToNextScreen()
+		goToScreen(GetCurrentScreen() + 1)
 		return
 	}
 
@@ -33,6 +33,6 @@ func (m ScreensMethods) MountScreen() {
 	pterm.Info.Printfln("Ghaf has been mounted to /root")
 
 	time.Sleep(1)
-	goToNextScreen()
+	goToScreen(GetCurrentScreen() + 1)
 	return
 }

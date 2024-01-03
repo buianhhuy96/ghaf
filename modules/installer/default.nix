@@ -69,7 +69,7 @@ in
         proxyVendor=true;
         ldflags = [
           "-X ghaf-installer/global.Images=${imageListText}"
-          "-X ghaf-installer/screen.screenDir=${installerDir}/screen"
+          "-X ghaf-installer/screen.sourceDir=${installerDir}"
           "-X ghaf-installer/screen.certPath=${config.services.registration-agent.certs-path}"
           "-X ghaf-installer/screen.configPath=${config.services.registration-agent.config-path}"
           "-X ghaf-installer/screen.tokenPath=${config.services.registration-agent.token-path}"

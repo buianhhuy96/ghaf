@@ -22,8 +22,7 @@ func (m ScreensMethods) PartitionScreen() {
 	var drivesList []string
 	var drivesListHeading string
 
-	drivesList = append([]string{nextScreenMsg}, drivesList...)
-	drivesList = append([]string{previousScreenMsg}, drivesList...)
+	drivesList = appendScreenControl(drivesList)
 
 	// If no images are selected to install
 	if len(global.Image2Install) == 0 {
@@ -50,7 +49,9 @@ func (m ScreensMethods) PartitionScreen() {
 
 	/***************** Start Installing *******************/
 
-	selectedPartition = strings.TrimSpace(strings.Split(string(selectedOption), global.SPACE_CHAR)[0])
+	selectedPartition = strings.TrimSpace(
+		strings.Split(string(selectedOption), global.SPACE_CHAR)[0],
+	)
 	pterm.Info.Printfln("Selected: %s", pterm.Green(selectedPartition))
 	writeImage := "dd if=" + global.Image2Install +
 		" of=/dev/" + selectedPartition +
@@ -69,7 +70,7 @@ func (m ScreensMethods) PartitionScreen() {
 	haveInstalledSystem = true
 	pterm.Info.Printfln("Installation Completed")
 
-	goToNextScreen()
+	goToScreen(GetCurrentScreen() + 1)
 	return
 }
 
@@ -106,7 +107,10 @@ func dropCR(data []byte) []byte {
 	return data
 }
 
-func customLineSplit(data []byte, atEOF bool) (advance int, token []byte, err error) {
+func customLineSplit(
+	data []byte,
+	atEOF bool,
+) (advance int, token []byte, err error) {
 	if atEOF && len(data) == 0 {
 		return 0, nil, nil
 	}

@@ -12,6 +12,7 @@ type ScreensMethods struct{}
 
 // Defines constants and variables for installation process
 const nextScreenMsg = ">>--Skip to next step------->>"
+const exitInstallerMsg = ">>--Quit installation------->>"
 const previousScreenMsg = "<<--Back to previous step---<<"
 
 var ConnectionStatus = false
@@ -21,27 +22,43 @@ var haveMountedSystem = false
 
 var currentInstallationScreen = 0
 var Screens = make(map[int]string)
-var screenDir = "./screen"
+
+var sourceDir = "."
+var screenDir = sourceDir + "/screen"
+var dataDir = sourceDir + "/data"
 var mountPoint = "/home/ghaf/root"
 
 func GetCurrentScreen() int {
 	return currentInstallationScreen
 }
 
-func goToNextScreen() {
-	currentInstallationScreen++
+func goToScreen(screen int) {
+	currentInstallationScreen = screen
 }
 
-func backToPreviousScreen() {
-	currentInstallationScreen--
+func appendScreenControl(messages []string) []string {
+	messages = append(
+		[]string{exitInstallerMsg},
+		messages...)
+	messages = append(
+		[]string{nextScreenMsg},
+		messages...)
+	messages = append(
+		[]string{previousScreenMsg},
+		messages...)
+	return messages
 }
 
 func checkSkipScreen(input string) bool {
 	if input == nextScreenMsg {
-		goToNextScreen()
+		goToScreen(GetCurrentScreen() + 1)
 		return true
 	} else if input == previousScreenMsg {
-		backToPreviousScreen()
+		goToScreen(GetCurrentScreen() - 1)
+		return true
+	} else if input == exitInstallerMsg {
+		// Go to Exit Screen
+		goToScreen(8)
 		return true
 	}
 	return false
@@ -56,7 +73,10 @@ func InitScreen() {
 	for _, file := range files {
 		// Split file name into arrays/slices
 		// "00-WelcomeScreen.go" => ["00" "WelcomeScreen"]
-		fileName := strings.Split(file.Name()[:len(file.Name())-len(filepath.Ext(file.Name()))], "-")
+		fileName := strings.Split(
+			file.Name()[:len(file.Name())-len(filepath.Ext(file.Name()))],
+			"-",
+		)
 
 		// Skip if file name not following above format (e.g "screen.go")
 		if len(fileName) != 2 {

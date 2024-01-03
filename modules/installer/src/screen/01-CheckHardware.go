@@ -6,6 +6,6 @@ func (m ScreensMethods) CheckHardwareHeading() string {
 }
 
 func (m ScreensMethods) CheckHardware() {
-	goToNextScreen()
+	goToScreen(GetCurrentScreen() + 1)
 
 }

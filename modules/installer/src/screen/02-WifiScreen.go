@@ -19,13 +19,20 @@ func (m ScreensMethods) WifiScreen() {
 		WithRemoveWhenDone(true).
 		Start("Scanning Wifi")
 
-	wifiConnect, _ := global.ExecCommand("nmcli", "-t", "--fields", "SSID,SIGNAL,SECURITY", "dev", "wifi")
+	wifiConnect, _ := global.ExecCommand(
+		"nmcli",
+		"-t",
+		"--fields",
+		"SSID,SIGNAL,SECURITY",
+		"dev",
+		"wifi",
+	)
 	wifiConnectSpinner.Stop()
 
 	skipWifi := false
 	if len(wifiConnect) == 0 {
 		skipWifi = true
-		goToNextScreen()
+		goToScreen(GetCurrentScreen() + 1)
 		return
 	}
 	for !ConnectionStatus && !skipWifi {
@@ -42,15 +49,23 @@ func (m ScreensMethods) WifiScreen() {
 		for _, wifi := range wifiList {
 			wSSID := strings.Split(string(wifi), ":")[0]
 			wSignal := strings.Split(string(wifi), ":")[1]
-			wSSIDBeautified := wSSID + strings.Repeat(" ", longestWifiSSID+2-len(wSSID))
+			wSSIDBeautified := wSSID + strings.Repeat(
+				" ",
+				longestWifiSSID+2-len(wSSID),
+			)
 			wSignalBeautified := wSignal + strings.Repeat(" ", 8-len(wSignal))
 			wSecurity := strings.Split(string(wifi), ":")[2]
-			wifiListBeautified = append(wifiListBeautified, wSSIDBeautified+"||"+wSignalBeautified+"||"+wSecurity)
+			wifiListBeautified = append(
+				wifiListBeautified,
+				wSSIDBeautified+"||"+wSignalBeautified+"||"+wSecurity,
+			)
 		}
 
-		wifiListBeautified = append([]string{nextScreenMsg}, wifiListBeautified...)
-		wifiListBeautified = append([]string{previousScreenMsg}, wifiListBeautified...)
-		wifiListHeading := "SSID" + strings.Repeat(" ", longestWifiSSID+2-len("SSID")) + "||SIGNAL  ||SECURITY"
+		wifiListBeautified = appendScreenControl(wifiListBeautified)
+		wifiListHeading := "SSID" + strings.Repeat(
+			" ",
+			longestWifiSSID+2-len("SSID"),
+		) + "||SIGNAL  ||SECURITY"
 		selectedWifi, _ := pterm.DefaultInteractiveSelect.
 			WithMaxHeight(20).
 			WithOptions(wifiListBeautified).
@@ -61,7 +76,9 @@ func (m ScreensMethods) WifiScreen() {
 			return
 		}
 
-		SSID := strings.TrimSpace(strings.Split(string(selectedWifi), string("||"))[0])
+		SSID := strings.TrimSpace(
+			strings.Split(string(selectedWifi), string("||"))[0],
+		)
 		pterm.Info.Printfln("Connect to %s", SSID)
 
 		password, _ := pterm.DefaultInteractiveTextInput.
@@ -73,7 +90,15 @@ func (m ScreensMethods) WifiScreen() {
 			WithShowTimer(false).
 			WithRemoveWhenDone(true).
 			Start("Connecting to " + SSID)
-		_, err := global.ExecCommand("nmcli", "dev", "wifi", "connect", SSID, "password", password)
+		_, err := global.ExecCommand(
+			"nmcli",
+			"dev",
+			"wifi",
+			"connect",
+			SSID,
+			"password",
+			password,
+		)
 		wifiConnectingSpinner.Stop()
 		if err == 0 {
 			ConnectionStatus = true
@@ -84,6 +109,6 @@ func (m ScreensMethods) WifiScreen() {
 		}
 	}
 
-	goToNextScreen()
+	goToScreen(GetCurrentScreen() + 1)
 
 }

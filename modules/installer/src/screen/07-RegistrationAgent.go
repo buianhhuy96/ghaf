@@ -24,7 +24,7 @@ func (m ScreensMethods) RegistrationAgent() {
 
 	if !(haveMountedSystem) {
 		pterm.Error.Printfln("No system has been mounted")
-		goToNextScreen()
+		goToScreen(GetCurrentScreen() + 1)
 		return
 	}
 	// Set create folders to store certificates
@@ -38,7 +38,7 @@ func (m ScreensMethods) RegistrationAgent() {
 
 	// Wait for 3 seconds for user to read the finish log
 	time.Sleep(3)
-	goToNextScreen()
+	goToScreen(GetCurrentScreen() + 1)
 
 }
 

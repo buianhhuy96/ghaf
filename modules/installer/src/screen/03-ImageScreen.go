@@ -26,8 +26,7 @@ func (m ScreensMethods) ImageScreen() {
 	}
 
 	// Add skip options and print option list to select which image to install
-	imageList = append([]string{nextScreenMsg}, imageList...)
-	imageList = append([]string{previousScreenMsg}, imageList...)
+	imageList = appendScreenControl(imageList)
 	selectedImage, _ := pterm.DefaultInteractiveSelect.
 		WithOptions(imageList).
 		Show("Please select image to install")
@@ -45,6 +44,6 @@ func (m ScreensMethods) ImageScreen() {
 		}
 	}
 
-	goToNextScreen()
+	goToScreen(GetCurrentScreen() + 1)
 
 }
