@@ -15,12 +15,8 @@ in
       #weston.ini.nix mods needed
     };
 
-    config = mkIf cfg.enable {
-      #TODO Should we assert dependency on graphics (weston) profile?
-      #For now enable weston + apps
-      ghaf.graphics.weston = {
-        enable = true;
-        enableDemoApplications = true;
-      };
+    config.ghaf = mkIf cfg.enable {
+      profiles.graphics.enable = true;
+      graphics.demo-apps.enableDemoApplications = true;
     };
   }

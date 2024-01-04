@@ -6,12 +6,18 @@
   config,
   ...
 }: let
-  cfg = config.ghaf.graphics.weston;
+  weston = config.ghaf.graphics.weston;
+  sway = config.ghaf.graphics.sway;
 in {
-  config = lib.mkIf cfg.enable {
-    fonts.fonts = with pkgs; [
+  config = {
+    fonts.fonts = with pkgs; 
+    lib.lists.optionals  weston.enable [
       fira-code
       hack-font
+    ]
+    ++ lib.lists.optionals sway.enable [
+      font-awesome_5
+      font-awesome
     ];
   };
 }
