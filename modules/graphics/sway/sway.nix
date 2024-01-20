@@ -70,8 +70,7 @@ in
       wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
       mako # notification system developed by swaywm maintainer
       wdisplays # tool to configure displays
-      # Seatd is needed to manage log-in process for sway
-      seatd
+      wl-mirror # mirror displays
       lisgd
     ];
   

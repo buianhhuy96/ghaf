@@ -17,20 +17,32 @@ in {
     environment.systemPackages = with pkgs;
       [
         brightnessctl
-        nwg-dock
-        nwg-drawer
-        nwg-wrapper
+        #nwg-dock
+        #nwg-drawer
+        #nwg-wrapper
         #nwg-displays
         
-        nwg-bar
-        nwg-menu
       ];
 
     # normal weston config
-    environment.etc."sway/config" = {
-      source = ./config;
-      # The UNIX file mode bits
-      mode = "0644";
+    #environment.etc."sway/config" = {
+    #  source = ./config;
+    #  # The UNIX file mode bits
+    #  mode = "0644";
+    #};
+
+    services.file-list = {
+      enable = true;
+      enabledFiles = [ "sway-config" ];
+      file-info = {
+        sway-config = { 
+          src-path = ./config;
+          des-path = "${config.users.users.ghaf.home}/.config/sway";
+          owner = config.ghaf.users.accounts.user;
+          permission = "666";
+        };
+      };
     };
+
   };
 }

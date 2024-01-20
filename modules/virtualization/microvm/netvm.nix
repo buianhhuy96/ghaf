@@ -177,7 +177,7 @@
         microvm.qemu.bios.enable = false;
         microvm.storeDiskType = "squashfs";
 
-        imports = import ../../module-list.nix;
+        imports = import ../../module-list.nix ++ import ../../fmo-module-list.nix;
       })
     ];
   };

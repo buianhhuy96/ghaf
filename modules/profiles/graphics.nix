@@ -14,7 +14,7 @@ in
       enable = mkEnableOption "Graphics profile";
       compositor = mkOption {
         type = types.enum compositors;
-        default = "weston";
+        default = "sway";
         description = ''
           Which Wayland compositor to use.
 
