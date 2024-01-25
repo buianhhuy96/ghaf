@@ -37,7 +37,7 @@ let
     in ''
       export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
       gnome_schema=org.gnome.desktop.interface
-      gsettings set $gnome_schema gtk-theme 'Adwaita'
+      gsettings set $gnome_schema gtk-theme 'Dracula'
     '';
   };
 
@@ -61,7 +61,9 @@ in
       wayland
       xdg-utils # for opening default programs when clicking links
       glib # gsettings
+      gsettings-desktop-schemas
       dracula-theme # gtk theme
+      yaru-remix-theme
       gnome3.adwaita-icon-theme  # default gnome cursors
       swaylock
       swayidle
@@ -72,6 +74,7 @@ in
       wdisplays # tool to configure displays
       wl-mirror # mirror displays
       lisgd
+      go
     ];
   
     services.pipewire = {

@@ -58,7 +58,6 @@ in
               src = cfg.file-info.${filename}.src-path;
               des = cfg.file-info.${filename}.des-path;
               permission = cfg.file-info.${filename}.permission;
-              # This should not be outPath,
               src-data = ((builtins.elemAt (builtins.filter (c: c.condition) (mkMerge [ 
                     (mkIf ( (builtins.typeOf src) == "set")                     
                       "${src.outPath}") 

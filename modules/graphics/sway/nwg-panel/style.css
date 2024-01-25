@@ -2,10 +2,19 @@
 
 /* Recommended if panel "height" unset or smaller then your theme default button height */
 button {
-    margin: 1px
-    /* border: 0 */
+    margin-top: 3px;
+    margin-right: 10px;
+    margin-left: 0px;
+    padding: 7px;
+    background: #182026;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0px 0px;
 }
 
+button:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
 /* SwayTaskBar and SwayWorkspaces use custom widgets, that need this and the next name
    to highlight currently focused task / workspace. */
 #task-box {
@@ -22,19 +31,9 @@ button {
 
 /***** MODIFY TO YOUR TASTE *****/
 
-/* Sample button in sample config w/ no background nor border */
-#button-chromium {
-    border: 0
-}
-
-#button-custom {
-    background: rgba (0, 0, 0, 0.0);
-    border: 0
-}
-
 /* Top panel in sample config uses this name */
 #panel-top {
-    background: #101010;
+    background: #3b4659;
     color: #eeeeee
 }
     

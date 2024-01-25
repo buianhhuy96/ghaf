@@ -1,205 +1,91 @@
 [
   {
-    "name": "panel-top",
-    "output": "*",
-    "layer": "bottom",
-    "position": "top",
-    "controls": "off",
-    "width": "auto",
-    "height": 40,
-    "homogeneous": true,
-    "margin-top": 0,
-    "margin-bottom": 0,
-    "padding-horizontal": 0,
-    "padding-vertical": 0,
-    "spacing": 0,
-    "items-padding": 0,
-    "icons": "light",
-    "css-name": "panel-top",
-    "modules-left": [
-    ],
-    "modules-center": [
-      "scratchpad"
-    ],
-    "modules-right": [
-      "clock"
-    ],
+    "brightness-slider": {},
+    "clock": {
+      "css-name": "clock",
+      "format": "%a, %d. %b  %H:%M:%S",
+      "interval": 1,
+      "on-left-click": "",
+      "on-middle-click": "",
+      "on-right-click": "",
+      "on-scroll-down": "",
+      "on-scroll-up": "",
+      "tooltip-text": ""
+    },
+    "controls": "right",
     "controls-settings": {
+      "angle": 0.0,
+      "backlight-controller": "brightnessctl",
+      "backlight-device": "",
+      "battery-low-interval": 3,
+      "battery-low-level": 20,
+      "click-closes": false,
+      "commands": {
+        "battery": "",
+        "bluetooth": "",
+        "net": ""
+      },
       "components": [
         "brightness",
         "volume",
         "battery"
       ],
-      "commands": {
-        "net": "",
-        "bluetooth": "",
-        "battery": ""
-      },
-      "show-values": true,
-      "interval": 1,
-      "icon-size": 20,
-      "hover-opens": false,
-      "leave-closes": true,
-      "click-closes": false,
       "css-name": "controls-window",
+      "hover-opens": false,
+      "icon-size": 16,
+      "interval": 1,
+      "leave-closes": true,
       "net-interface": "",
-      "custom-items": [
-        {
-          "name": "Panel settings",
-          "icon": "nwg-panel",
-          "cmd": "nwg-panel-config"
-        }
-      ],
       "output-switcher": false,
-      "backlight-controller": "brightnessctl",
-      "backlight-device": "",
-      "window-width": 0,
+      "root-css-name": "controls-overview",
+      "show-values": true,
       "window-margin-horizontal": 0,
       "window-margin-vertical": 0,
-      "root-css-name": "controls-overview",
-      "battery-low-level": 20,
-      "battery-low-interval": 3,
-      "angle": 0.0
+      "window-width": 0
     },
-    "tray": {
-      "root-css-name": "tray",
-      "inner-css-name": "inner-tray"
-    },
-    "sway-taskbar": {
-      "workspace-menu": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8"
-      ],
-      "name-max-len": 20,
-      "image-size": 16,
-      "workspaces-spacing": 0,
-      "task-padding": 0,
-      "show-app-icon": true,
-      "show-app-name": true,
-      "show-layout": true,
-      "workspace-buttons": false,
-      "all-workspaces": true,
-      "mark-autotiling": true,
-      "mark-xwayland": true,
-      "all-outputs": true
-    },
-    "sway-workspaces": {
-      "numbers": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8"
-      ]
-    },
-    "clock": {
-      "format": "%a, %d. %b  %H:%M:%S",
-      "tooltip-text": "",
-      "on-left-click": "",
-      "on-middle-click": "",
-      "on-right-click": "",
-      "on-scroll-up": "",
-      "on-scroll-down": "",
-      "css-name": "clock",
-      "interval": 1
-    },
-    "menu-start": "off",
+    "css-name": "panel-top",
+    "dwl-tags": {},
     "exclusive-zone": true,
-    "scratchpad": {
-      "css-name": "Ghaf",
-      "icon-size": 16,
-      "angle": 0.0,
-      "single-output": false
-    },
-    "openweather": {},
-    "brightness-slider": {},
-    "dwl-tags": {}
-  },
-  {
-    "name": "panel-bottom",
-    "output": "*",
-    "layer": "bottom",
-    "position": "bottom",
-    "controls": "right",
-    "width": "auto",
     "height": 40,
-    "margin-top": 0,
-    "margin-bottom": 0,
-    "padding-horizontal": 6,
-    "padding-vertical": 0,
-    "spacing": 0,
-    "items-padding": 0,
+    "homogeneous": true,
     "icons": "light",
-    "css-name": "panel-bottom",
-    "modules-left": [
-      "sway-taskbar"
+    "items-padding": 0,
+    "layer": "bottom",
+    "margin-bottom": 0,
+    "margin-top": 0,
+    "menu-start": "off",
+    "modules-center": [
+      "clock"
     ],
-    "modules-center": [],
+    "modules-left": [
+    ],
     "modules-right": [
       "tray"
     ],
-    "controls-settings": {
-      "components": [
-        "brightness",
-        "volume",
-        "battery"
-      ],
-      "commands": {
-        "net": "",
-        "bluetooth": "",
-        "battery": ""
-      },
-      "show-values": true,
-      "interval": 1,
+    "name": "panel-top",
+    "output": "All",
+    "padding-horizontal": 3,
+    "padding-vertical": 0,
+    "position": "top",
+    "scratchpad": {
+      "angle": 0.0,
+      "css-name": "Ghaf",
       "icon-size": 16,
-      "hover-opens": false,
-      "leave-closes": true,
-      "click-closes": false,
-      "css-name": "controls-window",
-      "net-interface": "",  
-      "menu": {
-        "name": "Exit",
-        "icon": "system-shutdown-symbolic",
-        "items": [
-          {
-            "name": "Lock",
-            "cmd": "swaylock -f -c 000000"
-          },
-          {
-            "name": "Logout",
-            "cmd": "swaymsg exit"
-          },
-          {
-            "name": "Reboot",
-            "cmd": "sudo shutdown -r now"
-          },
-          {
-            "name": "Shutdown",
-            "cmd": "sudo shutdown -h now"
-          }
-        ]
-      },
-      "output-switcher": false,
-      "backlight-controller": "brightnessctl",
-      "backlight-device": "",
-      "window-width": 0,
-      "window-margin-horizontal": 0,
-      "window-margin-vertical": 0,
-      "root-css-name": "controls-overview",
-      "battery-low-level": 20,
-      "battery-low-interval": 3,
-      "angle": 0.0
+      "single-output": false
     },
+    "spacing": 0,
     "sway-taskbar": {
+      "all-outputs": true,
+      "all-workspaces": true,
+      "image-size": 16,
+      "mark-autotiling": true,
+      "mark-xwayland": true,
+      "name-max-len": 20,
+      "show-app-icon": true,
+      "show-app-name": true,
+      "show-layout": true,
+      "task-padding": 0,
+      "workspace-buttons": false,
       "workspace-menu": [
         "1",
         "2",
@@ -210,18 +96,7 @@
         "7",
         "8"
       ],
-      "name-max-len": 20,
-      "image-size": 16,
-      "workspaces-spacing": 0,
-      "task-padding": 0,
-      "show-app-icon": true,
-      "show-app-name": true,
-      "show-layout": true,
-      "workspace-buttons": false,
-      "all-workspaces": true,
-      "mark-autotiling": true,
-      "mark-xwayland": true,
-      "all-outputs": false
+      "workspaces-spacing": 0
     },
     "sway-workspaces": {
       "numbers": [
@@ -235,46 +110,143 @@
         "8"
       ]
     },
+    "tray": {
+      "inner-css-name": "inner-tray",
+      "root-css-name": "tray"
+    },
+    "width": "auto",
+    "playerctl": {},
+    "openweather": {}
+  },
+  {
+    "brightness-slider": {
+      "angle": 0.0,
+      "backlight-controller": "brightnessctl",
+      "backlight-device": "",
+      "css-name": "brightness-popup",
+      "hover-opens": false,
+      "icon-placement": "start",
+      "icon-size": 16,
+      "interval": 10,
+      "leave-closes": false,
+      "popup-height": 64,
+      "popup-horizontal-alignment": "left",
+      "popup-horizontal-margin": 0,
+      "popup-icon-placement": "start",
+      "popup-vertical-alignment": "top",
+      "popup-vertical-margin": 0,
+      "popup-width": 256,
+      "root-css-name": "brightness-module",
+      "show-values": true,
+      "slider-inverted": false,
+      "slider-orientation": "horizontal",
+      "step-size": 1
+    },
     "clock": {
+      "css-name": "clock",
       "format": "%a, %d. %b  %H:%M:%S",
-      "tooltip-text": "",
+      "interval": 1,
       "on-left-click": "",
       "on-middle-click": "",
       "on-right-click": "",
-      "on-scroll-up": "",
       "on-scroll-down": "",
-      "css-name": "clock",
-      "interval": 1
+      "on-scroll-up": "",
+      "tooltip-text": ""
     },
-    "menu-start": "left",
-    "homogeneous": true,
-    "exclusive-zone": true,
-    "scratchpad": {},
-    "openweather": {},
-    "brightness-slider": {
-      "show-values": true,
-      "icon-size": 16,
-      "interval": 10,
-      "hover-opens": false,
-      "leave-closes": false,
-      "root-css-name": "brightness-module",
-      "css-name": "brightness-popup",
+    "controls": "off",
+    "controls-settings": {
       "angle": 0.0,
-      "icon-placement": "start",
-      "backlight-device": "",
       "backlight-controller": "brightnessctl",
-      "slider-orientation": "horizontal",
-      "slider-inverted": false,
-      "popup-icon-placement": "start",
-      "popup-horizontal-alignment": "left",
-      "popup-vertical-alignment": "top",
-      "popup-width": 256,
-      "popup-height": 64,
-      "popup-horizontal-margin": 0,
-      "popup-vertical-margin": 0,
-      "step-size": 1
+      "backlight-device": "",
+      "battery-low-interval": 3,
+      "battery-low-level": 20,
+      "click-closes": false,
+      "commands": {
+        "battery": "",
+        "bluetooth": "",
+        "net": ""
+      },
+      "components": [
+        "brightness",
+        "volume",
+        "battery"
+      ],
+      "css-name": "controls-window",
+      "hover-opens": false,
+      "icon-size": 16,
+      "interval": 1,
+      "leave-closes": true,
+      "net-interface": "",
+      "output-switcher": false,
+      "root-css-name": "controls-overview",
+      "show-values": true,
+      "window-margin-horizontal": 0,
+      "window-margin-vertical": 0,
+      "window-width": 0
     },
+    "css-name": "panel-bottom",
     "dwl-tags": {},
-    "tray": {}
+    "exclusive-zone": true,
+    "height": 40,
+    "homogeneous": true,
+    "icons": "light",
+    "items-padding": 0,
+    "layer": "bottom",
+    "margin-bottom": 0,
+    "margin-top": 0,
+    "menu-start": "off",
+    "modules-center": [],
+    "modules-left": [
+      "sway-taskbar"
+    ],
+    "modules-right": [
+    ],
+    "name": "panel-bottom",
+    "output": "All",
+    "padding-horizontal": 4,
+    "padding-vertical": 0,
+    "position": "bottom",
+    "scratchpad": {},
+    "spacing": 0,
+    "sway-taskbar": {
+      "all-outputs": false,
+      "all-workspaces": true,
+      "image-size": 16,
+      "mark-autotiling": true,
+      "mark-xwayland": true,
+      "name-max-len": 20,
+      "show-app-icon": true,
+      "show-app-name": true,
+      "show-layout": true,
+      "task-padding": 0,
+      "workspace-buttons": false,
+      "workspace-menu": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "workspaces-spacing": 0
+    },
+    "sway-workspaces": {
+      "numbers": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ]
+    },
+    "openweather": {},
+    "tray": {},
+    "width": "auto",
+    "playerctl": {}
   }
 ]
