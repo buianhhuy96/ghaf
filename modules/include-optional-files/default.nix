@@ -27,14 +27,19 @@ in
       type = with types; attrsOf (submodule {
         options = {  
           src-path = mkOption {
-            type = types.nullOr (types.oneOf [types.path types.set]);
+            type = types.oneOf [types.str  types.path types.attrs];
             description = "Path to source file to copy";
-            default = null;
+            default = "";
           };          
           des-path  = mkOption {
             type = types.path;
             default = "${config.users.users.ghaf.home}";
             description = "Path to paste output files";
+          };
+          write-once = mkOption {
+            type = types.bool;
+            default = false;
+            description = "Files is rewritten on every boot unless set this to true";
           };
           owner  = mkOption {
             type = types.nullOr types.str;
@@ -42,8 +47,8 @@ in
             description = "Owner of newly created destination folder";
           };
           permission  = mkOption {
-            type = types.nullOr types.str;
-            default = null;
+            type = types.str;
+            default = "";
             description = "File permission";
           };
         };
@@ -56,70 +61,61 @@ in
           systemdConfig = map (filename:  
             let 
               src = cfg.file-info.${filename}.src-path;
-              des = cfg.file-info.${filename}.des-path;
-              permission = cfg.file-info.${filename}.permission;
-              src-data = ((builtins.elemAt (builtins.filter (c: c.condition) (mkMerge [ 
-                    (mkIf ( (builtins.typeOf src) == "set")                     
-                      "${src.outPath}") 
-                    (mkIf ( (builtins.typeOf src) == "path") 
-                      "${src}")  
-                      ]).contents) 0).content);
-              mindepth = ((builtins.elemAt (builtins.filter (c: c.condition) (mkMerge [
-                    (mkIf ( (builtins.readFileType src-data) != "directory")
-                      "0")
-                    (mkIf ( (builtins.readFileType src-data) == "directory")
-                      "1")
-                      ]).contents) 0).content);
+              write-once = lib.boolToString cfg.file-info.${filename}.write-once; 
+              permission = if ("${cfg.file-info.${filename}.permission}" != "")
+                           then "-m " + "${cfg.file-info.${filename}.permission}"
+                           else cfg.file-info.${filename}.permission;              
+              owner = if ("${cfg.file-info.${filename}.owner}" != "root")
+                      then "-o " + "${cfg.file-info.${filename}.owner} " + "-g users"
+                      else cfg.file-info.${filename}.owner;
+              src-data = (if (builtins.typeOf src == "set") then "${src.outPath}" 
+                          else "${src}") ;
+              # Needing adding file name when not directory
+              des = if ("${src}" == "") 
+                    then ( cfg.file-info.${filename}.des-path )
+                    else (if (builtins.readFileType src-data == "directory") 
+                          then "${cfg.file-info.${filename}.des-path}"
+                          else ("${cfg.file-info.${filename}.des-path}"));
+              mindepth = (if ("${src}" == "") 
+                        then ( "0")
+                        else (if (builtins.readFileType src-data == "directory") then "1" else "0"));
 
             in {
               services.${filename} = {  
                 description = ''
                   Copy/Create "${filename}" files to "${des}" folder and set permission
                   '';
+                script = ''
+                    FILE_NAME="${filename}"
+                    SRC="${src-data}"
+                    DES="${des}"
+                    DEPTH="${mindepth}"
+                    EXECUTE_ONCE="${write-once}"
+                    OWNER="${owner}"
+                    PERMISSION="${permission}"
+                    if [ "$EXECUTE_ONCE" == "true" ]
+                    then
+                    	FLAG="/var/log/$FILE_NAME.log"
+                    	if [[ -f $FLAG ]]; then
+                    		exit
+                    	else
+                    		touch "$FLAG"
+                    	fi
+                    fi
+
+                    if [ ! -d "$DES" ]
+                    then
+                      ${pkgs.coreutils}/bin/install -d $OWNER $PERMISSION $DES
+                    fi
+
+                    if [ ! -z "$SRC" ]
+                    then
+                      ${pkgs.findutils}/bin/find $SRC -mindepth $DEPTH -exec install $OWNER $PERMISSION {} $DES \;
+                    fi
+                    exit
+                  '';
                 serviceConfig = 
-                  {
-                    Type = "oneshot";
-                  } //
-                  (mkMerge [
-                    (mkIf ( cfg.file-info.${filename}.owner != "root")
-                    {
-                      User = cfg.file-info.${filename}.owner;
-                      Group = "users";
-                    })
-                    (mkIf ( src == null && permission == null)
-                    {
-                      ExecStart = ''
-                        ${pkgs.coreutils}/bin/mkdir -p ${des}
-                        '';
-                    })
-                    (mkIf ( src == null && permission != null)
-                    {
-                      ExecStartPre = ''
-                              ${pkgs.coreutils}/bin/mkdir -p ${des}
-                              '';
-                      ExecStart = ''
-                          ${pkgs.coreutils}/bin/chmod -R ${permission} "${des}"
-                        '';
-                    })
-                    (mkIf ( src != null && permission == null)
-                    {
-                      ExecStartPre = ''
-                            ${pkgs.coreutils}/bin/mkdir -p ${des}
-                            '';
-                      ExecStart = ''
-                        ${pkgs.findutils}/bin/find "${src-data}" -mindepth ${mindepth} -exec install {} ${des} \;
-                        '';
-                    })
-                    (mkIf ( src != null && permission != null)
-                    {
-                      ExecStartPre = ''
-                            ${pkgs.coreutils}/bin/mkdir -p ${des}
-                            '';
-                      ExecStart = ''
-                        ${pkgs.findutils}/bin/find "${src-data}" -mindepth ${mindepth} -exec install -m ${permission} {} ${des} \;
-                        '';
-                    })  
-                  ]);
+                   { Type = "oneshot";};
                 
                 wantedBy = [ "multi-user.target" ]; 
                 enable = true;

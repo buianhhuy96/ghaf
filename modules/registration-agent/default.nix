@@ -115,19 +115,19 @@ in
             # Create and set permission of certs-path, config-path, token-path, hostname-path
             # If already created ignore the folder
             fmo-registration-agent-certs = { 
-              src-path = null;
+              src-path = "";
               des-path = cfg.certs-path;
             };
             fmo-registration-agent-config = { 
-              src-path = null;
+              src-path = "";
               des-path = cfg.config-path;
             };
             fmo-registration-agent-token = { 
-              src-path = null;
+              src-path = "";
               des-path = cfg.token-path;
             };
             fmo-registration-agent-hostname = { 
-              src-path = null;
+              src-path = "";
               des-path = cfg.hostname-path;
             };
           };
