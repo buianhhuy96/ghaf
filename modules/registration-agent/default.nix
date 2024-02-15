@@ -106,6 +106,8 @@ in
                 SERVICE_SWARM_KEY_FILE=${cfg.certs-path}/swarm.key
                 SERVICE_SWARM_CA_FILE=${cfg.certs-path}/swarm.crt
                 IP_ADDRESS_FILE=${cfg.ip-path}/ip-address
+                UTM_CLIENT_SECRET_FILE=${cfg.certs-path}/utm-client-secret
+                RABBIT_MQ_SECRET_FILE=${cfg.certs-path}/rabbit-mq-secret
                 POST_INSTALLATION_DIRECTORY=${cfg.postInstall-path}
               '';
               des-path = cfg.env-path;
