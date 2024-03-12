@@ -89,6 +89,7 @@ in
             fmo-registration-agent-env = { 
               src-path = pkgs.writeTextDir ".env" ''
                 AUTOMATIC_PROVISIONING=false
+                TLS=true
                 PROVISIONING_URL=
                 DEVICE_ALIAS=
                 DEVICE_IDENTITY_FILE=${cfg.certs-path}/identity.txt
