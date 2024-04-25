@@ -37,8 +37,8 @@ in {
         DCPATH=$(echo ${cfg.compose-path} )
         PRELOAD_PATH=$(echo ${preload_path})
 
-        echo "Login ghcr.io"
-        echo $PAT | ${pkgs.docker}/bin/docker login ghcr.io -u $USR --password-stdin || echo "login to ghcr.io failed continue as is"
+        echo "Login cr.airoplatform.com"
+        echo $PAT | ${pkgs.docker}/bin/docker login cr.airoplatform.com -u $USR --password-stdin || echo "login to cr.airoplatform.com failed continue as is"
 
         echo "Load preloaded docker images"
         for FNAME in ${cfg.preloaded-images}; do
